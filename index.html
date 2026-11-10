@@ -1,0 +1,1067 @@
+<!doctype html>
+<html lang="nl" class="auth-pending">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0066cc">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<title>GPS Puzzeltocht</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#173042;background:#f4f7f9}
+.auth-pending .app{visibility:hidden}
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden}body{display:flex;justify-content:center}
+.app{width:100%;max-width:620px;height:100svh;padding:10px 12px;display:flex;flex-direction:column;gap:7px;overflow:hidden}.app>.header{position:relative;display:flex;flex:0 0 auto;align-self:stretch;width:100%;min-width:0}.app>section,.app>.menu{position:relative;align-self:stretch;flex:1 1 0;width:100%;min-width:0;min-height:0}.mapView{position:fixed!important;display:block!important;z-index:10;flex:none!important;padding:0!important;overflow:hidden!important}.map{position:absolute;left:0;right:0;top:0;bottom:0;width:100%;height:100%;min-width:0;min-height:0;border-radius:14px;overflow:hidden}.mapZoomLevel{padding:5px 8px;background:#fff;border-radius:6px;box-shadow:0 1px 5px #0003;font-weight:750;font-size:.78rem;line-height:1.2;white-space:nowrap;pointer-events:none}.mapRouteSelect{position:absolute;right:14px;top:14px;z-index:1000;max-width:70%;padding:7px 30px 7px 10px;background:#fff;border:0;border-radius:9px;box-shadow:0 2px 8px #0002;font-weight:750;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mapAddPin{position:absolute;left:14px;bottom:14px;top:auto;z-index:1000;padding:8px 12px;border:0;border-radius:9px;background:#0066cc;color:#fff;box-shadow:0 2px 8px #0003;font-weight:750;font-size:.88rem;pointer-events:auto}.mapAddPin.active{background:#0066cc;color:#fff}.mapAddPopup{min-width:255px}.mapAddPopup label{display:block;font-weight:700;font-size:.78rem;margin:7px 0 3px}.mapAddPopup input,.mapAddPopup textarea{width:100%;font-size:.82rem;padding:6px}.mapAddPopup textarea{min-height:54px}.mapAddPopup .mapRadiusValue{text-align:center;font-weight:700;margin-top:3px}.mapAddPopup .mapAddSave{width:100%;margin-top:10px}.mapAddPopup .mapAddCancel{width:100%;margin-top:7px}.mapEditPopup{min-width:250px}.mapSaveBar{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:1000;background:#fff;padding:7px 10px;border-radius:10px;box-shadow:0 2px 10px #0004}.mapSaveBar .mapSave{min-width:120px}.mapEditPopup label{display:block;font-weight:700;font-size:.78rem;margin:7px 0 3px}.mapEditPopup input,.mapEditPopup textarea{width:100%;font-size:.82rem;padding:6px}.mapEditPopup textarea{min-height:54px}.mapEditPopup .mapMove{display:block!important;width:72%;margin:12px auto!important;text-align:center}.mapEditPopup .mapSave{margin-top:0;width:100%}.mapDragHint{font-size:.72rem;color:#60727e;margin-top:5px}.routePin{position:relative;width:30px;height:38px;color:#fff;display:flex;align-items:flex-start;justify-content:center;font-weight:800;font-size:.82rem}.routePin:before{content:"";position:absolute;left:2px;top:0;width:26px;height:26px;border-radius:50%;background:#0066cc;border:2px solid #fff;box-shadow:0 2px 5px #0005}.routePin:after{content:"";position:absolute;left:8px;top:20px;width:14px;height:14px;background:#0066cc;border-right:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(45deg);z-index:-1}.routePin span{position:relative;z-index:2;margin-top:5px}.routePinPrecision{position:relative;width:34px;height:82px}.routePinPrecision .pinStem{position:absolute;left:15px;top:30px;width:4px;height:30px;background:#0066cc;border-radius:4px;box-shadow:0 1px 3px #0004}.routePinPrecision .pinHandle{position:absolute;left:4px;bottom:0;width:26px;height:26px;border-radius:50%;background:#fff;border:4px solid #0066cc;box-shadow:0 2px 7px #0005;display:grid;place-items:center;color:#0066cc;font-weight:900;font-size:.72rem}.routePinPrecision .pinBase{position:absolute;left:2px;top:0;width:30px;height:38px}.routePinPrecision .pinBase:before{content:"";position:absolute;left:2px;top:0;width:26px;height:26px;border-radius:50%;background:#0066cc;border:2px solid #fff;box-shadow:0 2px 5px #0005}.routePinPrecision .pinBase:after{content:"";position:absolute;left:8px;top:20px;width:14px;height:14px;background:#0066cc;border-right:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(45deg);z-index:-1}.routePinPrecision .pinBase span{position:absolute;left:0;top:5px;width:30px;text-align:center;z-index:2}.infoBtn,.mapBtn{position:relative;background:transparent;color:#173042;width:32px;height:32px;padding:2px;line-height:1;display:grid;place-items:center}.infoBtn{font-size:1.65rem;font-weight:500}.mapBtn svg{width:24px;height:24px;display:block}.mapGlass{position:absolute;width:11px;height:11px;border:2px solid currentColor;border-radius:50%;right:1px;bottom:1px;background:#f4f7f9}.mapGlass:after{content:"";position:absolute;width:6px;height:2px;background:currentColor;right:-5px;bottom:-2px;transform:rotate(45deg);transform-origin:left center;border-radius:2px}.headerActions{display:flex;align-items:center;gap:3px}
+h1{font-size:1.25rem;margin:0}.header{display:flex;align-items:center;justify-content:space-between;background:#0066cc;color:#fff;border-radius:12px;padding:9px 10px 9px 14px;box-shadow:0 3px 10px #0066cc35}.header h1{color:#fff;font-size:1.2rem;letter-spacing:.01em}.header .infoBtn,.header .mapBtn,.header .menuBtn{color:#fff}.header .mapGlass{background:#0066cc}.menuBtn{background:transparent;color:#173042;font-size:1.45rem;padding:2px 6px;line-height:1}.menu{position:relative;right:auto;top:auto;z-index:1;flex:1;min-height:0;width:100%;max-height:none;overflow:auto}.menuItem{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:center;padding:8px 0;border-bottom:1px solid #e5eaed}.menuItem:last-child{border-bottom:0}.menuItemActions{display:flex;gap:5px;align-items:center;flex-wrap:nowrap}.menuNav{display:grid;gap:8px}.menuNav button{text-align:left;padding:13px 12px;font-size:1rem}.routesPageList{display:grid;gap:7px}.historyList{display:grid;gap:7px}.historyItem{padding:10px;border:1px solid #dce5ea;border-radius:10px;background:#f9fbfc}.historyItem strong{display:block;margin-bottom:3px}.historyMeta{font-size:.76rem;color:#60727e}.historyActions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
+.card{background:#fff;border-radius:14px;padding:10px;box-shadow:0 2px 10px #0001}
+button{border:0;border-radius:9px;padding:9px 10px;font-size:.9rem;font-weight:650;background:#0066cc;color:#fff}button.active{background:#0066cc}button.secondary{background:#e8eef2;color:#173042}button:disabled{opacity:.42}
+input,select,textarea{font:inherit;border:1px solid #ccd7dd;border-radius:8px;padding:8px;background:#fff}textarea{width:100%;resize:none}input[type=range]{width:100%;padding:0}
+.topline{display:flex;gap:7px;align-items:center}.topline input{flex:1;min-width:0}.topline button{white-space:nowrap}
+.slots{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin:7px 0}.slot{padding:7px 2px;font-size:.78rem;background:#e8eef2;color:#173042}.slot.selected{background:#0066cc;color:#fff}.slot.done{font-weight:800}
+.editor{display:grid;grid-template-columns:1fr auto;gap:7px;align-items:center}.locationSetter{display:grid;grid-template-columns:minmax(145px,1.15fr) 1fr 1fr;gap:6px;grid-column:1/-1}.locationSetter button{width:100%;white-space:nowrap}.locationSetter input{width:100%;min-width:0}.editor .wide{grid-column:1/-1}
+.compact{font-size:.78rem;color:#60727e}.coord{font-size:.8rem;font-weight:650}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:6px}.actions button{width:100%}
+.routes{display:grid;grid-template-columns:1fr auto;gap:6px}.routes select{min-width:0;width:100%}
+.status{padding:7px 9px;border-radius:8px;background:#eef5f8;font-size:.8rem}.ok{background:#eaf7ee}.warn{background:#fff5df}
+.test{display:flex;flex-direction:column;min-height:0;flex:1}.test.playerModeView .playerOnly{display:block}.test.playerModeView .technicalOnly{display:none}.playerOnly{display:none}.playerProgress{height:8px;background:#e8eef2;border-radius:99px;overflow:hidden;margin-top:8px}.playerProgressFill{box-shadow:0 0 6px #0066cc55}.playerProgressFill{height:100%;background:#0066cc;width:0;transition:width .25s}.playerHero{padding:15px 12px;text-align:center;border:1px solid #d7e7f5}.playerHero h2{color:#0066cc}.playerHero h2{margin:0 0 5px;font-size:1.25rem}.playerHero p{margin:0;color:#526772;font-size:.88rem;line-height:1.35}.playerNext{font-size:1.55rem;font-weight:800;text-align:center;margin:9px 0;color:#0066cc}.playerFound{font-size:1.05rem;font-weight:750;text-align:center;color:#0066cc}.playerModeView>.card:nth-of-type(3){display:none}.playerModeView>.wide:not(#puzzle){display:none}.playerModeView .playerHero{padding:8px 10px;border:0}.playerModeView .playerProgress{display:none}.playerModeView .playerHero h2{margin:0 0 3px;font-size:1.18rem}.playerModeView .playerHero p{font-size:.8rem;line-height:1.25;border-bottom:0}.playerModeView .playerHero.locationFound{border:2px solid #2e9b57;background:linear-gradient(135deg,#f0fff5,#ffffff)}.playerModeView .playerHero.locationFound h2{color:#238447}.playerModeView .playerHero.routeComplete{border:3px solid #0066cc;background:linear-gradient(135deg,#eaf6ff,#ffffff,#eaf6ff);box-shadow:0 0 18px #0066cc55,0 5px 18px #0002}.playerModeView .playerHero.routeComplete h2{color:#0066cc;font-size:1.35rem}.playerModeView .playerHero.routeComplete p{font-weight:750;color:#173042}.playerModeView .playerHero.routeComplete .playerProgress{height:7px;background:#dcecf8}.playerModeView .playerHero.routeComplete .playerProgressFill{width:100%!important;background:#2e9b57}.playerModeView .playerProgress{height:5px;margin-top:5px}.playerModeView .distance{display:grid;grid-template-columns:1fr;padding:0;overflow:hidden;border:1px solid #d6e4ef}.playerModeView .distance>div{width:100%}.playerModeView .distance>div:first-child{padding:10px 12px 5px;background:linear-gradient(#fff,#f7fbfe)}.playerModeView .distance>div:first-child .big{font-size:2.1rem;color:#0066cc}.playerModeView .distance>div:first-child .muted{font-size:.78rem}.playerModeView .distance>div:last-child{position:relative;padding:4px 10px 15px;background:#f8fbfd}.playerModeView .compass{position:relative;width:min(72vw,270px,38svh);height:min(72vw,270px,38svh);margin:0 auto;border:10px solid #0066cc;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 2px #d6e4ef,0 5px 16px #0002}.playerModeView .compass:before{content:"";position:absolute;inset:10px;border:1px solid #b8cad8;border-radius:50%}.playerModeView .compassTick{position:absolute;left:50%;top:50%;width:2px;height:calc(50% - 9px);background:#b8c7d0;opacity:.62;transform-origin:50% 100%;z-index:1}.playerModeView .tick0{transform:translate(-50%,-100%) rotate(0deg);height:calc(50% - 5px)}.playerModeView .tick45{transform:translate(-50%,-100%) rotate(45deg)}.playerModeView .tick90{transform:translate(-50%,-100%) rotate(90deg);height:calc(50% - 5px)}.playerModeView .tick135{transform:translate(-50%,-100%) rotate(135deg)}.playerModeView .tick180{transform:translate(-50%,-100%) rotate(180deg);height:calc(50% - 5px)}.playerModeView .tick225{transform:translate(-50%,-100%) rotate(225deg)}.playerModeView .tick270{transform:translate(-50%,-100%) rotate(270deg);height:calc(50% - 5px)}.playerModeView .tick315{transform:translate(-50%,-100%) rotate(315deg)}.playerModeView .tick0{transform:translate(-50%,-100%) rotate(0deg);height:calc(50% - 5px)}.playerModeView .tick10{transform:translate(-50%,-100%) rotate(10deg);height:calc(50% - 9px)}.playerModeView .tick20{transform:translate(-50%,-100%) rotate(20deg);height:calc(50% - 9px)}.playerModeView .tick30{transform:translate(-50%,-100%) rotate(30deg);height:calc(50% - 5px)}.playerModeView .tick40{transform:translate(-50%,-100%) rotate(40deg);height:calc(50% - 9px)}.playerModeView .tick50{transform:translate(-50%,-100%) rotate(50deg);height:calc(50% - 9px)}.playerModeView .tick60{transform:translate(-50%,-100%) rotate(60deg);height:calc(50% - 5px)}.playerModeView .tick70{transform:translate(-50%,-100%) rotate(70deg);height:calc(50% - 9px)}.playerModeView .tick80{transform:translate(-50%,-100%) rotate(80deg);height:calc(50% - 9px)}.playerModeView .tick90{transform:translate(-50%,-100%) rotate(90deg);height:calc(50% - 5px)}.playerModeView .tick100{transform:translate(-50%,-100%) rotate(100deg);height:calc(50% - 9px)}.playerModeView .tick110{transform:translate(-50%,-100%) rotate(110deg);height:calc(50% - 9px)}.playerModeView .tick120{transform:translate(-50%,-100%) rotate(120deg);height:calc(50% - 5px)}.playerModeView .tick130{transform:translate(-50%,-100%) rotate(130deg);height:calc(50% - 9px)}.playerModeView .tick140{transform:translate(-50%,-100%) rotate(140deg);height:calc(50% - 9px)}.playerModeView .tick150{transform:translate(-50%,-100%) rotate(150deg);height:calc(50% - 5px)}.playerModeView .tick160{transform:translate(-50%,-100%) rotate(160deg);height:calc(50% - 9px)}.playerModeView .tick170{transform:translate(-50%,-100%) rotate(170deg);height:calc(50% - 9px)}.playerModeView .tick180{transform:translate(-50%,-100%) rotate(180deg);height:calc(50% - 5px)}.playerModeView .tick190{transform:translate(-50%,-100%) rotate(190deg);height:calc(50% - 9px)}.playerModeView .tick200{transform:translate(-50%,-100%) rotate(200deg);height:calc(50% - 9px)}.playerModeView .tick210{transform:translate(-50%,-100%) rotate(210deg);height:calc(50% - 5px)}.playerModeView .tick220{transform:translate(-50%,-100%) rotate(220deg);height:calc(50% - 9px)}.playerModeView .tick230{transform:translate(-50%,-100%) rotate(230deg);height:calc(50% - 9px)}.playerModeView .tick240{transform:translate(-50%,-100%) rotate(240deg);height:calc(50% - 5px)}.playerModeView .tick250{transform:translate(-50%,-100%) rotate(250deg);height:calc(50% - 9px)}.playerModeView .tick260{transform:translate(-50%,-100%) rotate(260deg);height:calc(50% - 9px)}.playerModeView .tick270{transform:translate(-50%,-100%) rotate(270deg);height:calc(50% - 5px)}.playerModeView .tick280{transform:translate(-50%,-100%) rotate(280deg);height:calc(50% - 9px)}.playerModeView .tick290{transform:translate(-50%,-100%) rotate(290deg);height:calc(50% - 9px)}.playerModeView .tick300{transform:translate(-50%,-100%) rotate(300deg);height:calc(50% - 5px)}.playerModeView .tick310{transform:translate(-50%,-100%) rotate(310deg);height:calc(50% - 9px)}.playerModeView .tick320{transform:translate(-50%,-100%) rotate(320deg);height:calc(50% - 9px)}.playerModeView .tick330{transform:translate(-50%,-100%) rotate(330deg);height:calc(50% - 5px)}.playerModeView .tick340{transform:translate(-50%,-100%) rotate(340deg);height:calc(50% - 9px)}.playerModeView .tick350{transform:translate(-50%,-100%) rotate(350deg);height:calc(50% - 9px)}.playerModeView .compassLabel{position:absolute;font-size:1.18rem;font-weight:900;color:#314b5b;z-index:4;line-height:1}.playerModeView .north{top:8px;left:50%;transform:translateX(-50%);color:#0066cc}.playerModeView .east{right:10px;top:50%;transform:translateY(-50%)}.playerModeView .south{bottom:8px;left:50%;transform:translateX(-50%)}.playerModeView .west{left:10px;top:50%;transform:translateY(-50%)}.playerModeView .degree{position:absolute;font-size:.7rem;font-weight:650;color:#8a9aa4;z-index:3}.playerModeView .deg0{top:38px;left:50%;transform:translateX(-50%)}.playerModeView .deg90{right:38px;top:50%;transform:translateY(-50%)}.playerModeView .deg180{bottom:38px;left:50%;transform:translateX(-50%)}.playerModeView .deg270{left:38px;top:50%;transform:translateY(-50%)}.playerModeView .compassCenter{position:absolute;width:24px;height:24px;border-radius:50%;background:#fff;border:6px solid #0066cc;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5}.playerModeView .arrow{position:absolute!important;left:50%!important;top:50%!important;width:12px!important;height:118px!important;margin-left:-6px!important;margin-top:-118px!important;font-size:0!important;line-height:1!important;display:block!important;color:transparent!important;background:transparent!important;filter:drop-shadow(0 2px 2px #0003)!important;transform-origin:50% 100%!important;z-index:6}.playerModeView .arrow:before{content:"";position:absolute;left:50%;top:0;transform:translateX(-50%);border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:72px solid #0066cc}.playerModeView .arrow:after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);border-left:8px solid transparent;border-right:8px solid transparent;border-top:46px solid #9fb5c3}.playerModeView #distance{font-size:2.1rem}.playerModeView #direction{display:block;font-size:.92rem;font-weight:800;color:#0066cc;margin-top:7px}.playerModeView .testmain>.footer{display:none}.technicalOnly{display:none}.test:not(.playerModeView) .technicalOnly{display:block}.distance{display:grid;grid-template-columns:1fr;padding:0;overflow:hidden}.playerModeView .distance>div{width:100%}.playerModeView .distance>div:first-child{padding:5px 10px 2px}.playerModeView .distance>div:first-child .big{font-size:1.75rem}.playerModeView .distance>div:first-child .muted{font-size:.68rem}.playerModeView .distance>div:last-child{position:relative;padding:0 6px 5px}.playerModeView .distance>div:last-child:before{content:none}.playerModeView .arrow{font-size:7rem;line-height:.82;width:100%;height:112px;display:grid;place-items:center;color:#0066cc;filter:drop-shadow(0 2px 2px #0002)}.playerModeView #distance{font-size:2.15rem}.playerModeView #direction{display:block;font-size:1rem;font-weight:800;color:#0066cc;margin-top:5px}.playerModeView .testmain>.footer{display:none}.distance{display:grid;grid-template-columns:1fr 1fr;gap:6px}.big{font-size:2rem;font-weight:750;text-align:center}.muted{text-align:center;color:#657782;font-size:.75rem}.arrow{font-size:4.3rem;line-height:.9;text-align:center;transition:transform .25s}
+.testmain{display:grid;grid-template-columns:1fr 1fr;gap:7px}.testmain .wide{grid-column:1/-1}
+.puzzle{margin-top:7px}.puzzle input{display:block;width:100%;grid-column:1/-1}.playerModeView #puzzle>.status.ok{text-align:center;font-size:1.12rem;font-weight:800;padding:9px 10px}.playerModeView #puzzleQuestion{font-size:1.02rem;line-height:1.4;font-weight:600}.hidden{display:none!important}
+.inlineMapIcon{position:relative;display:inline-grid;vertical-align:-5px;width:20px;height:20px;margin-right:3px}.inlineMapIcon svg{width:20px;height:20px;display:block}.inlineMapGlass{position:absolute;width:8px;height:8px;border:1.7px solid currentColor;border-radius:50%;right:-1px;bottom:-1px;background:#fff}.inlineMapGlass:after{content:"";position:absolute;width:5px;height:1.7px;background:currentColor;right:-4px;bottom:-1px;transform:rotate(45deg);transform-origin:left center;border-radius:2px}.infoView{flex:1;min-height:0;overflow:auto;background:#fff;border-radius:14px;box-shadow:0 2px 10px #0001;padding:16px}.infoHero{display:flex;align-items:center;gap:12px;padding:2px 2px 14px;border-bottom:1px solid #e1e8ec}.infoCircle{width:42px;height:42px;border:2px solid #0066cc;border-radius:50%;display:grid;place-items:center;color:#0066cc;font-size:1.65rem;font-weight:500;flex:0 0 auto}.infoHero h2{font-size:1.18rem;margin:0 0 3px}.infoLead{font-size:.82rem;color:#60727e;line-height:1.35}.infoSection{padding:13px 2px;border-bottom:1px solid #e7ecef}.infoSection h3{font-size:.96rem;margin:0 0 6px;color:#173042}.infoSection p{font-size:.84rem;line-height:1.48;margin:5px 0;color:#415661}.infoSection ul{font-size:.84rem;line-height:1.5;color:#415661;margin:6px 0 5px;padding-left:20px}.infoSection li{margin:4px 0}.infoTip{background:#f4f8fa;margin:8px 0 0;padding:11px;border-radius:10px;border:0}.infoFooter{font-size:.68rem;color:#71818a;text-align:center;padding:12px 0 2px}.footer{font-size:.68rem;color:#71818a;text-align:center}
+@media(max-height:700px){.app{padding-top:6px;gap:5px}.card{padding:8px}.slots{margin:4px 0}.slot{padding:5px 1px}.editor{gap:5px}.big{font-size:1.7rem}.arrow{font-size:3.2rem}}
+
+.authOnly{display:none!important}.loginView{flex:1;min-height:0;background:#fff;border-radius:14px;box-shadow:0 2px 10px #0001;padding:18px}.loginBox{max-width:420px;margin:25px auto}.loginBox h2{margin:0 0 6px;color:#0066cc}.loginBox p{font-size:.84rem;color:#60727e;line-height:1.4}.loginBox input{width:100%;margin:8px 0}.loginActions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}.loginStatus{margin-top:9px}.header.loggedOut .mapBtn{display:none}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header"><h1>GPS Puzzeltocht</h1><div class="headerActions"><button id="infoButton" class="infoBtn" aria-label="Informatie" title="Informatie">ⓘ</button><button id="mapButton" class="mapBtn" aria-label="Kaart" title="Kaart"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3.8 6.1v14L9 18l6 2 5.2-2.1v-14L15 6 9 4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 4v14M15 6v14" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span class="mapGlass"></span></button><button id="menuButton" class="menuBtn" aria-label="Menu">☰</button></div></div>
+<section id="infoView" class="infoView hidden" aria-label="Informatie over GPS Puzzeltocht"><div id="infoMakerContent"><div class="infoHero"><div class="infoCircle">ⓘ</div><div><h2>Over GPS Puzzeltocht</h2><div class="infoLead">Maak en test je eigen GPS-puzzeltocht op je smartphone.</div></div></div><div class="infoSection"><h3>🧭 Zo werkt het</h3><p>Een route bestaat uit maximaal 10 locaties. Bij iedere locatie bepaal je een GPS-punt, een aankomstradius, een vraag en het juiste antwoord.</p><p>Tijdens het testen wordt een locatie pas vrijgegeven wanneer je binnen de ingestelde radius bent. Daarna beantwoord je de vraag om verder te gaan naar de volgende locatie.</p></div><div class="infoSection"><h3>📍 Locaties instellen</h3><p>Je kunt een locatie op twee manieren vastleggen:</p><ul><li><strong>Huidige positie</strong> — gebruik de GPS-positie van je telefoon.</li><li><strong>Coördinaten invoeren</strong> — vul breedtegraad en lengtegraad handmatig in.</li></ul><p>Per locatie kun je de aankomstradius instellen van 5 tot 50 meter.</p></div><div class="infoSection"><h3>❓ Vraag en antwoord</h3><p>Beschrijf bij iedere locatie de vraag of opdracht. Vul daaronder het juiste antwoord in. Tijdens het testen wordt het antwoord gecontroleerd voordat de volgende locatie wordt vrijgegeven.</p></div><div class="infoSection"><h3>💾 Routes</h3><p>Geef je route een naam en kies <strong>Opslaan</strong>. Via het menu ☰ kun je opgeslagen routes later bewerken of verwijderen. Je kunt een opgeslagen route ook direct testen.</p></div><div class="infoSection"><h3><span class="inlineMapIcon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3.8 6.1v14L9 18l6 2 5.2-2.1v-14L15 6 9 4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 4v14M15 6v14" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><span class="inlineMapGlass"></span></span> Kaart</h3><p>Met het kaarticoon zie je OpenStreetMap, je huidige positie en de locaties van de geselecteerde route. De locaties worden met genummerde naalden aangegeven.</p><p>Tik op een naald voor de GPS-coördinaten, vraag en antwoord van die locatie.</p></div><div class="infoSection infoTip"><h3>💡 Tip</h3><p>Stel de locaties bij voorkeur buiten op de daadwerkelijke plekken in. Controleer daarna de route met <strong>Test huidige route</strong> voordat je hem gebruikt.</p></div></div><div id="infoUserContent" class="hidden">
+<div class="infoSection"><h3>🧭 GPS Puzzeltocht gebruiken</h3><p>Met een GPS-puzzeltocht loop je van locatie naar locatie. De pijl op het scherm wijst je naar de volgende locatie en de afstand wordt voortdurend bijgewerkt.</p></div>
+<div class="infoSection"><h3>📍 Een locatie bereiken</h3><p>Wanneer je binnen de ingestelde aankomstradius bent, verschijnt automatisch de puzzel die bij die locatie hoort.</p><p>Geef je telefoon even de tijd om een nauwkeurige GPS-positie te bepalen.</p></div>
+<div class="infoSection"><h3>❓ De puzzel oplossen</h3><p>Lees de vraag en vul je antwoord in. Bij een goed antwoord krijg je een bevestiging en ga je verder naar de volgende locatie.</p><p>Is het antwoord niet goed? Probeer het dan opnieuw.</p></div>
+<div class="infoSection"><h3>🏁 Route voltooid</h3><p>Na het goede antwoord op de laatste locatie krijg je een felicitatie. Daarmee heb je de hele puzzelroute succesvol doorlopen.</p></div>
+<div class="infoSection infoTip"><h3>💡 Tip</h3><p>Zorg dat GPS en locatievoorzieningen op je telefoon zijn ingeschakeld. Buiten werkt GPS meestal het nauwkeurigst.</p></div>
+<div class="infoFooter">GPS Puzzeltocht · informatie</div>
+</div></section>
+<div id="menu" class="card menu hidden">
+ <div id="loginMenu" class="menuNav"><button id="homeUserMenu">🏠 Home</button><button id="historyMenu">📜 Mijn historie</button><button id="loginMenuButton">🔐 Routemaker inloggen</button></div>
+ <div id="makerMenu" class="menuNav authOnly">
+  <button id="homeMenu">🏠 Home</button>
+  <button id="routesMenu">🗂️ Routes</button>
+  <button id="playerMenu">▶️ Gebruikersscherm</button>
+  <button id="logoutButton" class="secondary">🚪 Uitloggen</button>
+ </div>
+</div>
+<section id="historyView" class="infoView hidden" aria-label="Mijn historie"><div class="infoHero"><div class="infoCircle">📜</div><div><h2>Mijn historie</h2><div class="infoLead">Hier vind je de puzzelroutes die op deze smartphone succesvol zijn voltooid.</div></div></div><div class="infoSection"><div id="historyList" class="historyList"></div><div class="historyActions"><button id="exportHistory">📤 Exporteren</button><button id="importHistoryButton" class="secondary">📥 Importeren</button></div><input id="importHistoryFile" type="file" accept="application/json,.json" class="hidden"><div id="historyStatus" class="status hidden" style="margin-top:8px"></div></div></section>
+<div id="loginView" class="loginView hidden" aria-label="Routemaker inloggen">
+ <div class="loginBox">
+  <h2>🔐 Routemaker inloggen</h2>
+  <p>Log in om routes te maken, te bewerken en te testen. Zonder inloggen is alleen het gebruikersscherm beschikbaar.</p>
+  <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Wachtwoord">
+  <div class="loginActions"><button id="loginButton">Inloggen</button><button id="loginCancel" class="secondary">← Gebruikersscherm</button></div>
+  <div id="loginStatus" class="status hidden"></div>
+ </div>
+</div>
+
+<section id="routesView" class="card hidden">
+ <div class="topline"><strong>Opgeslagen routes</strong><button id="routesHome" class="secondary">← Home</button></div>
+ <div id="routesPageList" style="margin-top:7px"></div>
+</section>
+
+<section id="setup" class="card">
+ <div class="topline">
+  <input id="routeName" placeholder="Naam van de route">
+  <button id="saveRoute">Opslaan</button>
+ </div>
+ <div class="slots" id="slots"></div>
+ <div class="editor">
+  <strong id="selectedTitle">Locatie 1</strong>
+  <span class="coord" id="selectedCoord">nog niet ingesteld</span>
+  <div class="locationSetter"><button id="setLocation">📍 Huidige positie</button><input id="latitudeInput" inputmode="decimal" placeholder="Breedtegraad"><input id="longitudeInput" inputmode="decimal" placeholder="Lengtegraad"></div>
+  <label class="wide">Aankomstradius: <strong id="radiusValue">15</strong> m
+   <input id="radius" type="range" min="5" max="50" value="15" step="5">
+  </label>
+  <label class="wide">Gesproken aanwijzing onderweg
+   <textarea id="spokenDirection" rows="2" placeholder="Bijvoorbeeld: Loop rechtdoor tot aan de brug en houd daar rechts aan."></textarea>
+  </label>
+  <label class="wide">Gesproken informatie bij het object
+   <textarea id="spokenInfo" rows="3" placeholder="Vertel hier iets over het gebouw, monument of object."></textarea>
+  </label>
+  <label class="wide">Vraag voor deze locatie
+   <textarea id="question" rows="2" placeholder="Omschrijf hier de vraag of opdracht"></textarea>
+  </label>
+  <label class="wide">Antwoord voor deze locatie
+   <input id="answerSetup" style="width:100%" placeholder="Voer het juiste antwoord in" autocomplete="off">
+  </label>
+  <div id="setupStatus" class="status wide">Kies een locatie en stel die in op je huidige GPS-positie.</div>
+ </div>
+ <div class="actions" style="margin-top:7px">
+  <button id="testCurrent">Test huidige route</button>
+  <button id="newRoute" class="secondary">Nieuwe route</button>
+ </div>
+ <div class="routes" style="margin-top:7px">
+  <select id="savedRoutes"><option value="">Opgeslagen routes…</option></select>
+  <button id="testSaved">Test</button>
+ </div>
+</section>
+
+<section id="test" class="test hidden">
+ <div class="card playerRouteSelect playerOnly" style="padding:8px 10px">
+  <div class="topline"><strong>Route</strong><select id="playerRouteSelect" style="flex:1;min-width:0"><option value="">Kies een route…</option></select></div>
+ </div>
+ <div class="card playerOnly" style="padding:8px 10px">
+  <div class="actions"><button id="voiceStart" type="button">🔊 Gesproken begeleiding starten</button><button id="voiceRepeat" type="button" class="secondary">↻ Herhaal</button></div>
+  <div class="actions" style="margin-top:6px"><button id="voicePause" type="button" class="secondary">Ⅱ Pauze / verder</button><button id="voiceStop" type="button" class="secondary">■ Stop gesproken tekst</button></div>
+  <div id="voiceStatus" class="compact" style="margin-top:5px">Gesproken begeleiding staat uit.</div>
+ </div>
+ <div class="card playerHero playerOnly" id="playerHero">
+  <h2 id="playerTitle">GPS Puzzeltocht</h2>
+  <p id="playerInstruction">Volg de pijl naar de volgende locatie.</p>
+  <div class="playerProgress"><div id="playerProgressFill" class="playerProgressFill"></div></div>
+  <div class="playerNext" id="playerNext">Locatie 1 van 1</div>
+ </div>
+ <div class="card">
+  <div class="topline"><strong id="testRouteName">Route</strong><button id="backSetup" class="secondary">← Bewerken</button></div>
+  <div class="playerOnly compact" id="playerLabel">Deelnemersscherm</div>
+  <div class="status" id="testStatus">GPS-positie wordt gezocht…</div><div class="playerFound playerOnly" id="playerFound"></div>
+ </div>
+ <div class="card distance">
+  <div><div class="big" id="distance">—</div><div class="muted">afstand tot doel</div></div>
+  <div><div class="compass" aria-label="Kompas"><span class="compassTick tick0"></span><span class="compassTick tick10"></span><span class="compassTick tick20"></span><span class="compassTick tick30"></span><span class="compassTick tick40"></span><span class="compassTick tick50"></span><span class="compassTick tick60"></span><span class="compassTick tick70"></span><span class="compassTick tick80"></span><span class="compassTick tick90"></span><span class="compassTick tick100"></span><span class="compassTick tick110"></span><span class="compassTick tick120"></span><span class="compassTick tick130"></span><span class="compassTick tick140"></span><span class="compassTick tick150"></span><span class="compassTick tick160"></span><span class="compassTick tick170"></span><span class="compassTick tick180"></span><span class="compassTick tick190"></span><span class="compassTick tick200"></span><span class="compassTick tick210"></span><span class="compassTick tick220"></span><span class="compassTick tick230"></span><span class="compassTick tick240"></span><span class="compassTick tick250"></span><span class="compassTick tick260"></span><span class="compassTick tick270"></span><span class="compassTick tick280"></span><span class="compassTick tick290"></span><span class="compassTick tick300"></span><span class="compassTick tick310"></span><span class="compassTick tick320"></span><span class="compassTick tick330"></span><span class="compassTick tick340"></span><span class="compassTick tick350"></span><span class="compassLabel north">N</span><span class="compassLabel east">O</span><span class="compassLabel south">Z</span><span class="compassLabel west">W</span><span class="degree deg0">0°</span><span class="degree deg90">90°</span><span class="degree deg180">180°</span><span class="degree deg270">270°</span><div class="compassCenter"></div><div class="arrow" id="arrow">↑</div></div><div class="muted" id="direction">kompas nog niet beschikbaar</div></div>
+ </div>
+  <div class="wide">
+   <h2 id="clueTitle" style="font-size:1rem;margin:4px 0">—</h2>
+   <div class="compact" id="clue">—</div>
+  </div>
+  <div class="wide" id="puzzle" class="puzzle">
+   <div class="status ok">🎉 Locatie gevonden!</div>
+   <div class="compact" id="puzzleQuestion" style="margin:5px 0">Beantwoord de opdracht.</div>
+   <input id="answer" placeholder="Antwoord" autocomplete="off">
+   <button id="checkAnswer" style="width:100%;margin-top:5px">Controleer antwoord</button>
+   <div class="status hidden" id="answerStatus"></div>
+  </div>
+ </div>
+ <div class="footer technicalOnly">GPS-nauwkeurigheid: <span id="accuracy">—</span> m · Doel: <span id="target">—</span></div>
+</section>
+
+<section id="mapView" class="card mapView hidden" aria-label="OpenStreetMap">
+ <div id="map" class="map"></div>
+ <select id="mapRouteSelect" class="mapRouteSelect" aria-label="Route selecteren"><option value="">Route selecteren…</option></select>
+ <button id="mapAddPin" class="mapAddPin" type="button">＋ Nieuwe pin</button>
+</section>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+let current=null,deviceHeading=null,orientationStarted=false,usingAbsolute=false;
+let playerMode=false,selected=0,setupLocations=[],setupQuestions=[],setupAnswers=[],setupSpokenDirections=[],setupSpokenInfo=[],routes=[],testRoute=null,testIndex=0,target=null,reached=false,map=null,mapMarker=null,mapRouteMarkers=[],infoReturn='setup';
+let playerProgress=null;
+let mapAddMode=false,mapAddHandler=null,mapAddMarker=null;
+let makerAuthorized=false;
+const AUTH_API='https://gps-puzzeltocht-auth.leeuw008.workers.dev';
+
+const STORAGE_OLD_ORIGIN='https://leeuw008-nl.github.io';
+const STORAGE_NEW_ORIGIN='https://gps-puzzeltocht.leeuw008.nl';
+
+window.addEventListener('message',e=>{
+ if(e.data?.type==='gpsPuzzleStorageRequest' && e.origin===STORAGE_NEW_ORIGIN){
+  e.source?.postMessage({
+   type:'gpsPuzzleStorageResponse',
+   routes:localStorage.getItem('gpsPuzzleRoutes')||'[]',
+   locations:localStorage.getItem('gpsPuzzleLocations')||'[]',
+   questions:localStorage.getItem('gpsPuzzleQuestions')||'[]',
+   answers:localStorage.getItem('gpsPuzzleAnswers')||'[]'
+  },e.origin);
+  return;
+ }
+ if(e.data?.type==='gpsPuzzleStorageResponse' && location.origin===STORAGE_NEW_ORIGIN && e.origin===STORAGE_OLD_ORIGIN){
+  const hasRoutes=localStorage.getItem('gpsPuzzleRoutes');
+  if(hasRoutes) return;
+  try{
+   localStorage.setItem('gpsPuzzleRoutes',e.data.routes||'[]');
+   localStorage.setItem('gpsPuzzleLocations',e.data.locations||'[]');
+   localStorage.setItem('gpsPuzzleQuestions',e.data.questions||'[]');
+   localStorage.setItem('gpsPuzzleAnswers',e.data.answers||'[]');
+   load();
+   if(!makerAuthorized)openPlayer();
+  }catch{}
+ }
+});
+
+function requestOldStorage(){
+ if(location.origin!==STORAGE_NEW_ORIGIN)return;
+ if(localStorage.getItem('gpsPuzzleRoutes'))return;
+ const frame=document.createElement('iframe');
+ frame.src=STORAGE_OLD_ORIGIN+'/GPS-Puzzeltocht/?storageBridge=1';
+ frame.style.display='none';
+ frame.onload=()=>frame.contentWindow?.postMessage({type:'gpsPuzzleStorageRequest'},STORAGE_OLD_ORIGIN);
+ document.body.appendChild(frame);
+ setTimeout(()=>frame.remove(),5000);
+}
+
+function load(){
+ try{setupLocations=JSON.parse(localStorage.getItem('gpsPuzzleLocations')||'[]')}catch{setupLocations=[]}
+ try{routes=JSON.parse(localStorage.getItem('gpsPuzzleRoutes')||'[]')}catch{routes=[]}
+ try{setupQuestions=JSON.parse(localStorage.getItem('gpsPuzzleQuestions')||'[]')}catch{setupQuestions=[]}
+ try{setupAnswers=JSON.parse(localStorage.getItem('gpsPuzzleAnswers')||'[]')}catch{setupAnswers=[]}
+ setupQuestions=Array.from({length:10},(_,i)=>String(setupQuestions[i]||''));
+ setupAnswers=Array.from({length:10},(_,i)=>String(setupAnswers[i]||''));
+ try{setupSpokenDirections=JSON.parse(localStorage.getItem('gpsPuzzleSpokenDirections')||'[]')}catch{setupSpokenDirections=[]}
+ try{setupSpokenInfo=JSON.parse(localStorage.getItem('gpsPuzzleSpokenInfo')||'[]')}catch{setupSpokenInfo=[]}
+ setupSpokenDirections=Array.from({length:10},(_,i)=>String(setupSpokenDirections[i]||''));
+ setupSpokenInfo=Array.from({length:10},(_,i)=>String(setupSpokenInfo[i]||''));
+ setupLocations=Array.from({length:10},(_,i)=>{
+  const x=setupLocations[i];
+  if(!x)return null;
+  return x.lat!==undefined?{lat:x.lat,lon:x.lon,radius:Number(x.radius)||15}:null;
+ });
+ renderRoutes();renderRoutesPage();renderSlots();selectLocation(0);
+}
+function saveSetup(){localStorage.setItem('gpsPuzzleLocations',JSON.stringify(setupLocations));localStorage.setItem('gpsPuzzleQuestions',JSON.stringify(setupQuestions));localStorage.setItem('gpsPuzzleAnswers',JSON.stringify(setupAnswers));localStorage.setItem('gpsPuzzleSpokenDirections',JSON.stringify(setupSpokenDirections));localStorage.setItem('gpsPuzzleSpokenInfo',JSON.stringify(setupSpokenInfo))}
+function renderSlots(){
+ $('slots').innerHTML='';
+ setupLocations.forEach((x,i)=>{
+  const b=document.createElement('button');b.className='slot'+(i===selected?' selected':'')+(x?' done':'');
+  b.textContent=x?'✓'+(i+1):(i+1);b.onclick=()=>selectLocation(i);$('slots').appendChild(b);
+ });
+}
+function selectLocation(i){
+ selected=i;const x=setupLocations[i];
+ $('selectedTitle').textContent='Locatie '+(i+1);
+ $('selectedCoord').textContent=x?fmtCoord(x):'nog niet ingesteld';$('latitudeInput').value=x?String(x.lat):'';$('longitudeInput').value=x?String(x.lon):'';
+ $('radius').value=x?.radius||15;$('radiusValue').textContent=x?.radius||15;
+ $('question').value=setupQuestions[i]||'';$('answerSetup').value=setupAnswers[i]||'';
+ $('spokenDirection').value=setupSpokenDirections[i]||'';
+ $('spokenInfo').value=setupSpokenInfo[i]||'';
+ $('setupStatus').textContent=x?'✓ Locatie '+(i+1)+' ingesteld. Pas evt. aankomstradius aan.':'';
+ renderSlots();
+}
+$('radius').oninput=()=>{const v=Number($('radius').value);$('radiusValue').textContent=v;if(setupLocations[selected]){setupLocations[selected].radius=v;saveSetup()}};
+$('question').oninput=()=>{setupQuestions[selected]=$('question').value;saveSetup()};
+$('answerSetup').oninput=()=>{setupAnswers[selected]=$('answerSetup').value;saveSetup()};
+$('spokenDirection').oninput=()=>{setupSpokenDirections[selected]=$('spokenDirection').value;saveSetup()};
+$('spokenInfo').oninput=()=>{setupSpokenInfo[selected]=$('spokenInfo').value;saveSetup()};
+function requestCurrentPosition(){
+ if(!('geolocation' in navigator)){
+  $('setupStatus').className='status warn';
+  $('setupStatus').textContent='GPS/locatie wordt niet ondersteund door deze browser.';
+  return
+ }
+ $('setupStatus').className='status';
+ $('setupStatus').textContent='GPS-positie wordt opgehaald…';
+ navigator.geolocation.getCurrentPosition(pos=>{
+  onPos(pos);
+  $('latitudeInput').value=String(pos.coords.latitude);
+  $('longitudeInput').value=String(pos.coords.longitude);
+  $('selectedCoord').textContent=fmtCoord(current);
+  $('setupStatus').className='status ok';
+  $('setupStatus').textContent='GPS-positie gevonden: '+fmtCoord(current)+' (nauwkeurigheid ±'+Math.round(pos.coords.accuracy)+' m).';
+ },err=>{
+  $('setupStatus').className='status warn';
+  const msg=err.code===1?'Locatietoegang geweigerd. Geef deze website toestemming voor locatie.':err.code===2?'GPS-positie kon niet worden bepaald. Controleer of locatie/GPS aanstaat.':'GPS-positie ophalen duurt te lang. Probeer opnieuw.';
+  $('setupStatus').textContent=msg;
+ },{enableHighAccuracy:true,maximumAge:0,timeout:15000});
+}
+function setLocation(){
+ if(!current){requestCurrentPosition();return}
+ const radius=Number($('radius').value)||15;
+ setupLocations[selected]={lat:current.lat,lon:current.lon,radius};
+ saveSetup();selectLocation(selected);
+ $('setupStatus').textContent='✓ Locatie '+(selected+1)+' opgeslagen op '+fmtCoord(current)+' met '+radius+' m radius.';
+}
+function setManualCoordinates(){
+ const lat=Number(String($('latitudeInput').value).replace(',','.'));
+ const lon=Number(String($('longitudeInput').value).replace(',','.'));
+ if(!Number.isFinite(lat)||lat<-90||lat>90||!Number.isFinite(lon)||lon<-180||lon>180){
+  $('setupStatus').textContent='Voer geldige GPS-coördinaten in: breedtegraad -90 t/m 90 en lengtegraad -180 t/m 180.';return
+ }
+ const radius=Number($('radius').value)||15;
+ setupLocations[selected]={lat,lon,radius};
+ saveSetup();selectLocation(selected);
+ $('setupStatus').textContent='✓ Locatie '+(selected+1)+' handmatig ingesteld op '+fmtCoord({lat,lon})+' met '+radius+' m radius.';
+}
+$('setLocation').onclick=()=>{if(!current)requestCurrentPosition();else setLocation()};
+$('latitudeInput').onchange=setManualCoordinates;
+$('longitudeInput').onchange=setManualCoordinates;
+
+function routeReady(){return setupLocations.some(Boolean)}
+function makeRoute(name){
+ const stages=setupLocations.filter(Boolean).map((x,i)=>({
+  title:'Locatie '+(i+1),clue:i===0?'Volg de pijl naar locatie 1.':'Goed gedaan. Ga nu naar locatie '+(i+1)+'.',
+  target:{lat:x.lat,lon:x.lon},radius:x.radius,question:setupQuestions[i]?.trim()||'Testvraag bij locatie '+(i+1)+'.',answer:setupAnswers[i]?.trim()||String(i+1),spokenDirection:setupSpokenDirections[i]?.trim()||'',spokenInfo:setupSpokenInfo[i]?.trim()||''
+ }));
+ return{name:name.trim()||'Nieuwe route',stages,created:new Date().toISOString()};
+}
+async function saveRoute(){
+ if(!routeReady()){$('setupStatus').textContent='Stel eerst minimaal één locatie in.';return}
+ const r=makeRoute($('routeName').value);
+ $('saveRoute').disabled=true;
+ try{
+  const api=await authRequest('/routes',{method:'POST',body:JSON.stringify(r)});
+  if(!api.ok)throw new Error(api.data?.error||'Opslaan op server mislukt');
+  routes=Array.isArray(api.data.routes)?api.data.routes:[r];
+  localStorage.setItem('gpsPuzzleRoutes',JSON.stringify(routes));
+  renderRoutes();
+  $('routeName').value=r.name;
+  $('setupStatus').textContent='✓ Route “'+r.name+'” server-side opgeslagen met '+r.stages.length+' locaties.';
+ }catch{
+  const existing=routes.findIndex(x=>x.name===r.name);
+  if(existing>=0)routes[existing]=r;else routes.push(r);
+  localStorage.setItem('gpsPuzzleRoutes',JSON.stringify(routes));renderRoutes();
+  $('routeName').value=r.name;
+  $('setupStatus').textContent='⚠ Serveropslag niet bereikbaar. Route lokaal opgeslagen.';
+ }finally{$('saveRoute').disabled=false}
+}
+$('saveRoute').onclick=saveRoute;
+function showView(view){
+ if(!makerAuthorized && ['setup','routes','map'].includes(view))view='test';
+ $('setup').classList.toggle('hidden',view!=='setup');
+ $('routesView').classList.toggle('hidden',view!=='routes');
+ $('test').classList.toggle('hidden',view!=='test');
+ $('mapView').classList.toggle('hidden',view!=='map');
+ $('infoView').classList.toggle('hidden',view!=='info');
+ $('menu').classList.toggle('hidden',view!=='menu');
+ $('historyView').classList.toggle('hidden',view!=='history');
+ $('loginView').classList.toggle('hidden',view!=='login');
+}
+$('menuButton').onclick=()=>{
+ const open=$('menu').classList.contains('hidden');
+ if(open){showView('menu')}else{showView(makerAuthorized?'setup':'test')}
+};
+$('homeMenu').onclick=()=>{if(makerAuthorized)showView('setup')};
+$('routesMenu').onclick=()=>{if(makerAuthorized){renderRoutesPage();showView('routes')}};
+$('playerMenu').onclick=()=>openPlayer();
+$('playerRouteSelect').onchange=()=>{const r=routes[Number($('playerRouteSelect').value)];if(!r)return;testRoute=r;testIndex=loadPlayerProgress(r);if(testIndex<0||testIndex>=r.stages.length)testIndex=0;playerProgress={route:r.name,index:testIndex};reached=false;target=r.stages[testIndex].target;$('testRouteName').textContent=r.name;setStage();update();updatePlayerView();};
+$('routesHome').onclick=()=>{if(makerAuthorized)showView('setup')};
+$('infoButton').onclick=()=>{
+ const open=$('infoView').classList.contains('hidden');
+ if(open){
+  infoReturn=$('test').classList.contains('hidden')?($('mapView').classList.contains('hidden')?'setup':'map'):'test';
+  $('infoUserContent').classList.toggle('hidden',makerAuthorized);$('infoMakerContent').classList.toggle('hidden',!makerAuthorized);
+  showView('info');
+ }else{showView(infoReturn)}
+};
+
+function renderRoutes(){
+ const s=$('savedRoutes');s.innerHTML='<option value="">Opgeslagen routes…</option>';
+ routes.forEach((r,i)=>{const o=document.createElement('option');o.value=i;o.textContent=r.name+' ('+r.stages.length+')';s.appendChild(o)});
+ renderMenuRoutes();
+}
+function renderMenuRoutes(){}
+function renderRoutesPage(){
+ const box=$('routesPageList');box.innerHTML='';
+ if(!routes.length){box.innerHTML='<div class="status">Nog geen opgeslagen routes. Ga naar Home om een route te maken.</div>';return}
+ routes.forEach((r,i)=>{
+  const row=document.createElement('div');row.className='menuItem';
+  const name=document.createElement('strong');name.textContent=r.name+' ('+r.stages.length+')';
+  const actions=document.createElement('div');actions.className='menuItemActions';
+  const edit=document.createElement('button');edit.textContent='Bewerken';edit.className='secondary';edit.onclick=()=>editRoute(i);
+  const test=document.createElement('button');test.textContent='Test';test.onclick=()=>startTest(r);
+  const del=document.createElement('button');del.textContent='Verwijder';del.className='secondary';del.onclick=()=>deleteRoute(i);
+  actions.append(edit,test,del);row.append(name,actions);box.appendChild(row);
+ });
+}
+function editRoute(i){
+ const r=routes[i];if(!r)return;
+ playerMode=false;playerProgress=null;testRoute=null;
+ setupLocations=Array.from({length:10},(_,n)=>r.stages[n]?{...r.stages[n].target,radius:r.stages[n].radius||15}:null);
+ setupQuestions=Array.from({length:10},(_,n)=>r.stages[n]?.question||'');
+ setupAnswers=Array.from({length:10},(_,n)=>r.stages[n]?.answer||'');setupSpokenDirections=Array.from({length:10},(_,n)=>r.stages[n]?.spokenDirection||'');setupSpokenInfo=Array.from({length:10},(_,n)=>r.stages[n]?.spokenInfo||'');
+ saveSetup();$('routeName').value=r.name;selectLocation(0);$('savedRoutes').value=String(i);$('menu').classList.add('hidden');
+ showView('setup');
+}
+async function deleteRoute(i){
+ const r=routes[i];if(!r)return;
+ if(!confirm('Route “'+r.name+'” verwijderen?'))return;
+ try{
+  const api=await authRequest('/routes?name='+encodeURIComponent(r.name),{method:'DELETE'});
+  if(!api.ok)throw new Error();
+  routes=Array.isArray(api.data.routes)?api.data.routes:routes.filter(x=>x!==r);
+  localStorage.setItem('gpsPuzzleRoutes',JSON.stringify(routes));
+  renderRoutes();renderRoutesPage();
+  $('savedRoutes').value='';
+  $('setupStatus').textContent='Route verwijderd.';
+ }catch{
+  $('setupStatus').className='status warn';
+  $('setupStatus').textContent='Route kon niet van de server worden verwijderd.';
+ }
+}
+$('savedRoutes').onchange=()=>{
+ const r=routes[Number($('savedRoutes').value)];if(!r)return;
+ setupLocations=Array.from({length:10},(_,i)=>r.stages[i]?{...r.stages[i].target,radius:r.stages[i].radius||15}:null);
+ setupQuestions=Array.from({length:10},(_,i)=>r.stages[i]?.question||'');
+ setupAnswers=Array.from({length:10},(_,i)=>r.stages[i]?.answer||'');setupSpokenDirections=Array.from({length:10},(_,i)=>r.stages[i]?.spokenDirection||'');setupSpokenInfo=Array.from({length:10},(_,i)=>r.stages[i]?.spokenInfo||'');
+ saveSetup();$('routeName').value=r.name;selectLocation(0);
+};
+$('testSaved').onclick=()=>{
+ const r=routes[Number($('savedRoutes').value)];
+ if(!r){$('setupStatus').textContent='Kies eerst een opgeslagen route.';return}
+ startTest(r,true);
+};
+$('testCurrent').onclick=()=>{
+ if(!routeReady()){$('setupStatus').textContent='Stel eerst minimaal één locatie in.';return}
+ startTest(makeRoute($('routeName').value),true);
+};
+$('newRoute').onclick=()=>{
+ testRoute=null;testIndex=0;setupLocations=[];setupQuestions=Array(10).fill('');setupAnswers=Array(10).fill('');setupSpokenDirections=Array(10).fill('');setupSpokenInfo=Array(10).fill('');$('routeName').value='';saveSetup();selectLocation(0);
+};
+const PLAYER_HISTORY_KEY='gpsPuzzlePlayerHistory';
+function loadPlayerHistory(){
+ try{const h=JSON.parse(localStorage.getItem(PLAYER_HISTORY_KEY)||'[]');return Array.isArray(h)?h:[]}catch{return[]}
+}
+function savePlayerHistory(history){localStorage.setItem(PLAYER_HISTORY_KEY,JSON.stringify(history))}
+function renderPlayerHistory(){
+ const box=$('historyList');if(!box)return;
+ const history=loadPlayerHistory();box.innerHTML='';
+ if(!history.length){box.innerHTML='<div class="status">Nog geen voltooide routes op deze smartphone.</div>';return}
+ history.slice().reverse().forEach(item=>{
+  const row=document.createElement('div');row.className='historyItem';
+  const name=document.createElement('strong');name.textContent='🏆 '+item.routeName;
+  const meta=document.createElement('div');meta.className='historyMeta';
+  const d=new Date(item.completedAt);meta.textContent='Voltooid: '+(isNaN(d)?item.completedAt:d.toLocaleString('nl-NL'))+' • '+item.locations+' locaties';
+  row.append(name,meta);box.appendChild(row);
+ });
+}
+function recordCompletedRoute(route){
+ if(!route||!route.name)return;
+ const history=loadPlayerHistory();
+ history.push({routeName:String(route.name),completedAt:new Date().toISOString(),locations:route.stages?.length||0});
+ savePlayerHistory(history);renderPlayerHistory();
+}
+function exportPlayerHistory(){
+ const data={format:'gps-puzzeltocht-history',version:1,exportedAt:new Date().toISOString(),history:loadPlayerHistory()};
+ const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='gps-puzzeltocht-historie.json';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+ $('historyStatus').className='status ok';$('historyStatus').textContent='Historie geëxporteerd.';
+}
+function importPlayerHistory(file){
+ const reader=new FileReader();
+ reader.onload=()=>{
+  try{
+   const data=JSON.parse(reader.result),incoming=Array.isArray(data)?data:data.history;
+   if(!Array.isArray(incoming))throw new Error();
+   const current=loadPlayerHistory();
+   const merged=[...current];
+   incoming.forEach(item=>{
+    if(!item||!item.routeName||!item.completedAt)return;
+    const exists=merged.some(x=>x.routeName===item.routeName&&x.completedAt===item.completedAt);
+    if(!exists)merged.push({routeName:String(item.routeName),completedAt:String(item.completedAt),locations:Number(item.locations)||0});
+   });
+   merged.sort((a,b)=>String(a.completedAt).localeCompare(String(b.completedAt)));
+   savePlayerHistory(merged);renderPlayerHistory();
+   $('historyStatus').className='status ok';$('historyStatus').textContent='Historie geïmporteerd.';
+  }catch{$('historyStatus').className='status warn';$('historyStatus').textContent='Dit bestand bevat geen geldige GPS-Puzzeltocht-historie.'}
+  $('importHistoryFile').value='';
+ };
+ reader.readAsText(file);
+}
+function playerProgressKey(route){
+ const identity=(route?.stages||[]).map(s=>[
+  s.target?.lat,s.target?.lon,s.radius,s.question,s.answer
+ ]).map(v=>JSON.stringify(v)).join('|');
+ return 'gpsPuzzlePlayerProgress:'+String(route?.name||'').trim()+':'+identity;
+}
+function loadPlayerProgress(route){
+ try{
+  const raw=localStorage.getItem(playerProgressKey(route));
+  if(!raw)return 0;
+  const p=JSON.parse(raw);
+  return Number.isInteger(p.index)&&p.index>=0&&p.index<route.stages.length?p.index:0;
+ }catch{return 0}
+}
+function savePlayerProgress(){
+ if(!playerMode||!testRoute)return;
+ localStorage.setItem(playerProgressKey(testRoute),JSON.stringify({index:testIndex,saved:new Date().toISOString()}));
+}
+function clearPlayerProgress(){
+ if(testRoute)localStorage.removeItem(playerProgressKey(testRoute));
+}
+function updatePlayerView(){
+ $('test').classList.toggle('playerModeView',playerMode);
+ $('backSetup').textContent=playerMode?'← Home':'← Bewerken';
+ const total=testRoute?.stages.length||0;
+ $('playerProgressFill').style.width=total?((testIndex/total)*100)+'%':'0%';
+ $('playerLabel').textContent=playerMode?'Deelnemersscherm':'';
+ $('playerNext').textContent='';
+ if(testRoute){
+  $('playerTitle').textContent='Ga naar locatie '+(testIndex+1)+' (van '+total+')';
+  $('playerInstruction').textContent='Volg de pijl. Zodra je bij de locatie bent, verschijnt de puzzel.';
+ }
+}
+function populatePlayerRoutes(selectedRoute){
+ const s=$('playerRouteSelect');if(!s)return;
+ s.innerHTML='<option value="">Kies een route…</option>';
+ routes.forEach((r,i)=>{const o=document.createElement('option');o.value=i;o.textContent=r.name+' ('+r.stages.length+')';s.appendChild(o)});
+ const idx=routes.findIndex(r=>r===selectedRoute|| (r&&selectedRoute&&r.name===selectedRoute.name));
+ if(idx>=0)s.value=String(idx);
+}
+async function fetchServerRoutes(){
+ try{
+  const api=await authRequest('/routes');
+  if(!api.ok||!Array.isArray(api.data.routes))return false;
+  routes=api.data.routes;
+  localStorage.setItem('gpsPuzzleRoutes',JSON.stringify(routes));
+  renderRoutes();renderRoutesPage();
+  return true;
+ }catch{return false}
+}
+async function syncLocalRoutesToServer(localRoutes=routes){
+ if(!makerAuthorized||!localRoutes.length)return;
+ try{
+  const server=await authRequest('/routes');
+  if(!server.ok||!Array.isArray(server.data.routes))return;
+  if(server.data.routes.length){
+   routes=server.data.routes;
+   localStorage.setItem('gpsPuzzleRoutes',JSON.stringify(routes));
+   renderRoutes();renderRoutesPage();
+   return;
+  }
+  for(const r of localRoutes){
+   const saved=await authRequest('/routes',{method:'POST',body:JSON.stringify(r)});
+   if(!saved.ok)break;
+  }
+  await fetchServerRoutes();
+ }catch{}
+}
+function openPlayer(){
+ playerMode=true;
+ if(routeReady()) testRoute=makeRoute($('routeName').value);
+ else if(!testRoute){
+  const idx=Number($('savedRoutes').value);
+  if(routes[idx])testRoute=routes[idx];
+ }
+ populatePlayerRoutes(testRoute);
+ if(testRoute&&testRoute.stages.length){
+  testIndex=loadPlayerProgress(testRoute);
+  if(testIndex<0||testIndex>=testRoute.stages.length)testIndex=0;
+  playerProgress={route:testRoute.name,index:testIndex};
+  reached=false;target=testRoute.stages[testIndex].target;
+  $('testRouteName').textContent=testRoute.name;
+  $('backSetup').textContent='← Home';
+  $('testStatus').className='status';
+  updatePlayerView();
+  setStage();update();showView('test');
+ }else{
+  $('testRouteName').textContent='Gebruikersscherm';
+  $('backSetup').textContent='← Home';
+  updatePlayerView();
+  $('testStatus').className='status warn';
+  $('testStatus').textContent='Nog geen route beschikbaar. Maak eerst een route via Home.';
+  $('distance').textContent='—';$('target').textContent='—';
+  $('puzzle').classList.add('hidden');
+  showView('test');
+ }
+}
+$('backSetup').onclick=()=>{
+ testRoute=null;playerMode=false;playerProgress=null;showView('setup')
+};
+
+function startTest(r,asPlayer=false){
+ playerMode=!!asPlayer;voiceEnabled=false;lastSpokenTexts=[];
+ $('voiceStatus').textContent='Gesproken begeleiding staat uit. Druk op “Gesproken begeleiding starten”.';
+ $('voiceStart').textContent='🔊 Gesproken begeleiding starten';
+ playerProgress=null;
+ testRoute=r;testIndex=0;reached=false;target=r.stages[0].target;
+ $('testRouteName').textContent=r.name;$('backSetup').textContent=playerMode?'← Home':'← Bewerken';populatePlayerRoutes(r);showView('test');updatePlayerView();
+ setStage();update();
+}
+$('backSetup').onclick=()=>{testRoute=null;playerMode=false;showView('setup')};
+
+function speakSequence(texts,statusText){
+ const clean=(texts||[]).map(x=>String(x||'').trim()).filter(Boolean);lastSpokenTexts=clean;
+ if(!voiceEnabled||!clean.length||!('speechSynthesis'in window)||!('SpeechSynthesisUtterance'in window))return;
+ speechSynthesis.cancel();
+ const run=i=>{if(!voiceEnabled||i>=clean.length)return;const u=new SpeechSynthesisUtterance(clean[i]);u.lang='nl-NL';u.rate=0.95;u.pitch=1;u.onend=()=>run(i+1);u.onerror=()=>{$('voiceStatus').textContent='Spraak kon niet worden afgespeeld. Controleer de spraakinstellingen van je telefoon.'};speechSynthesis.speak(u)};
+ $('voiceStatus').textContent=statusText||'Gesproken tekst wordt afgespeeld.';run(0);
+}
+$('voiceStart').onclick=()=>{if(!('speechSynthesis'in window)){$('voiceStatus').textContent='Deze browser ondersteunt geen gesproken tekst.';return}voiceEnabled=true;$('voiceStart').textContent='🔊 Gesproken begeleiding actief';const st=testRoute?.stages?.[testIndex];speakSequence([st?.spokenDirection||('Je bent onderweg naar locatie '+(testIndex+1)+'.')],'Gesproken begeleiding is ingeschakeld.')};
+$('voiceRepeat').onclick=()=>{if(!voiceEnabled){$('voiceStatus').textContent='Start eerst de gesproken begeleiding.';return}speakSequence(lastSpokenTexts,'Gesproken tekst wordt herhaald.')};
+$('voicePause').onclick=()=>{if(!voiceEnabled||!('speechSynthesis'in window))return;if(speechSynthesis.speaking&&!speechSynthesis.paused){speechSynthesis.pause();$('voiceStatus').textContent='Gesproken tekst gepauzeerd.'}else if(speechSynthesis.paused){speechSynthesis.resume();$('voiceStatus').textContent='Gesproken tekst wordt hervat.'}};
+$('voiceStop').onclick=()=>{voiceEnabled=false;if('speechSynthesis'in window)speechSynthesis.cancel();$('voiceStart').textContent='🔊 Gesproken begeleiding starten';$('voiceStatus').textContent='Gesproken begeleiding gestopt.'};
+function rad(x){return x*Math.PI/180}function deg(x){return x*180/Math.PI}function norm(x){return(x%360+360)%360}
+function distance(a,b){const R=6371000,p1=rad(a.lat),p2=rad(b.lat),dp=rad(b.lat-a.lat),dl=rad(b.lon-a.lon),h=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
+function bearing(a,b){const p1=rad(a.lat),p2=rad(b.lat),dl=rad(b.lon-a.lon),y=Math.sin(dl)*Math.cos(p2),x=Math.cos(p1)*Math.sin(p2)-Math.sin(p1)*Math.cos(p2)*Math.cos(dl);return norm(deg(Math.atan2(y,x)))}
+function fmtCoord(p){return p?p.lat.toFixed(5)+', '+p.lon.toFixed(5):'—'}
+function smoothHeading(next){if(deviceHeading===null){deviceHeading=next;return}const d=(next-deviceHeading+540)%360-180;deviceHeading=norm(deviceHeading+d*.25)}
+function handleAbsolute(e){if(typeof e.alpha!=='number'||!isFinite(e.alpha))return;let h=norm(360-e.alpha),a=screen.orientation?.angle||0;h=norm(h+a);smoothHeading(h);usingAbsolute=true;orientationStarted=true;update()}
+function handleFallback(e){if(usingAbsolute)return;if(typeof e.webkitCompassHeading==='number'&&isFinite(e.webkitCompassHeading)){smoothHeading(e.webkitCompassHeading);orientationStarted=true;update()}}
+function startOrientation(){if(orientationStarted)return;window.addEventListener('deviceorientationabsolute',handleAbsolute,true);window.addEventListener('deviceorientation',handleFallback,true);if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function')DeviceOrientationEvent.requestPermission(true).catch(()=>{})}
+function setStage(){const s=testRoute?.stages[testIndex];if(!s)return;target=s.target;reached=false;$('puzzle').classList.add('hidden');$('answer').value='';$('answerStatus').className='status hidden';$('clueTitle').textContent=s.title;$('clue').textContent=s.clue;if(voiceEnabled&&s.spokenDirection)speakSequence([s.spokenDirection],'Onderweg naar locatie '+(testIndex+1)+'.')}
+function update(){
+ if(!current)return;
+ $('accuracy').textContent=Math.round(current.accuracy);$('target').textContent=fmtCoord(target);
+ if(!testRoute||!target){$('distance').textContent='—';return}
+ const s=testRoute.stages[testIndex],d=distance(current,target),b=bearing(current,target);
+ $('distance').textContent=d<1000?Math.round(d)+' m':(d/1000).toFixed(2)+' km';
+ if(deviceHeading!==null){const rel=(b-deviceHeading+540)%360-180;$('arrow').style.transform='rotate('+rel+'deg)';$('direction').textContent=Math.round(b)+'°'}
+ else{$('direction').textContent='kompas —'}
+ $('testStatus').textContent=current.accuracy>30?'GPS minder nauwkeurig dan 30 m; wacht even.':('Stap '+(testIndex+1)+' van '+testRoute.stages.length+' • aankomstradius '+s.radius+' m');
+ if(d<=s.radius){
+  if(!reached){
+   reached=true;
+   $('puzzleQuestion').textContent=s.question;
+   $('puzzle').classList.remove('hidden');
+   if(voiceEnabled)speakSequence([s.spokenInfo,s.question].filter(Boolean),'Locatie '+(testIndex+1)+' bereikt.');
+   if(playerMode){
+    $('playerTitle').textContent='🎯 Locatie '+(testIndex+1)+' gevonden!';$('playerHero').classList.add('locationFound');$('playerHero').classList.remove('routeComplete');
+    $('playerInstruction').textContent='Los de puzzel op om verder te gaan naar de volgende locatie.';
+    $('playerFound').textContent='Je bent op de juiste plek.';
+   }
+  }
+  $('testStatus').className='status ok';$('testStatus').textContent=playerMode?'Locatie gevonden! Beantwoord de puzzel.':'🎉 Locatie '+(testIndex+1)+' bereikt!';
+ }else{
+  if(!reached){
+   $('puzzle').classList.add('hidden');
+   if(playerMode){
+    $('playerHero').classList.remove('locationFound','routeComplete');$('playerTitle').textContent='Ga naar locatie '+(testIndex+1)+' (van '+testRoute.stages.length+')';
+    $('playerInstruction').textContent='Volg de pijl. Zodra je bij de locatie bent, verschijnt de puzzel.';
+   }
+  }
+  reached=false;$('testStatus').className='status';$('testStatus').textContent=playerMode?'Op weg naar de volgende locatie…':'Stap '+(testIndex+1)+' van '+testRoute.stages.length+' • '+Math.round(d)+' m naar doel • radius '+s.radius+' m';
+ }
+}
+function onPos(pos){current={lat:pos.coords.latitude,lon:pos.coords.longitude,accuracy:pos.coords.accuracy};update();updateMapLocation()}
+function onErr(e){$('testStatus').textContent='GPS-fout: '+e.message;$('testStatus').className='status warn'}
+function updateMapZoomLevel(){
+ if(!map)return;
+ const el=$('mapZoomLevel');
+ if(el)el.textContent='Zoom '+map.getZoom();
+}
+function initMap(){
+ if(map)return true;
+ if(typeof L==='undefined')return false;
+ const el=$('map');
+ if(!el)return false;
+ el.style.width='100%';el.style.height='100%';
+ map=L.map(el,{zoomControl:true,maxZoom:19}).setView([52.5200,6.4200],18);
+ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap-bijdragers'}).addTo(map);
+ const zoomControl=L.control({position:'topleft'});
+ zoomControl.onAdd=function(){
+  const el=L.DomUtil.create('div','mapZoomLevel leaflet-control');
+  el.id='mapZoomLevel';
+  el.setAttribute('aria-label','Zoomniveau');
+  return el;
+ };
+ zoomControl.addTo(map);
+ map.on('zoomend',updateMapZoomLevel);
+ updateMapZoomLevel();
+ return true;
+}
+function stopMapAddMode(){
+ mapAddMode=false;
+ const btn=$('mapAddPin');
+ if(btn){btn.classList.remove('active');btn.textContent='＋ Nieuwe pin';}
+ if(map&&mapAddHandler){map.off('click',mapAddHandler);mapAddHandler=null;}
+ if(mapAddMarker){map.removeLayer(mapAddMarker);mapAddMarker=null;}
+}
+async function saveNewMapPin(lat,lon,question,answer,radius,index){
+ setupLocations[index]={lat:Number(lat),lon:Number(lon),radius:Number(radius)||15};
+ setupQuestions[index]=question||'';
+ setupAnswers[index]=answer||'';
+ saveSetup();
+ const routeName=$('routeName').value.trim();
+ const routeIndex=routes.findIndex(r=>r&&r.name===routeName);
+ if(routeIndex>=0){
+  const saved=routes[routeIndex];
+  if(!Array.isArray(saved.stages))saved.stages=[];
+  saved.stages.push({
+   title:'Locatie '+(index+1),
+   clue:index===0?'Volg de pijl naar locatie 1.':'Goed gedaan. Ga nu naar locatie '+(index+1)+'.',
+   target:{lat:Number(lat),lon:Number(lon)},
+   radius:Number(radius)||15,
+   question:question||'',
+   answer:answer||''
+  });
+  routes[routeIndex]=saved;
+  localStorage.setItem('gpsPuzzleRoutes',JSON.stringify(routes));
+  renderRoutes();renderRoutesPage();
+  try{
+   const api=await authRequest('/routes',{method:'POST',body:JSON.stringify(saved)});
+   if(api.ok&&Array.isArray(api.data.routes)){
+    routes=api.data.routes;
+    localStorage.setItem('gpsPuzzleRoutes',JSON.stringify(routes));
+    renderRoutes();renderRoutesPage();
+   }
+  }catch{}
+ }
+ selected=index;
+ selectLocation(index);
+ $('setupStatus').className='status ok';
+ $('setupStatus').textContent='✓ Locatie '+(index+1)+' toegevoegd op de kaart.';
+ updateMapRoute();
+}
+function startMapAddMode(){
+ if(testRoute){$('setupStatus').className='status warn';$('setupStatus').textContent='Nieuwe pinnen toevoegen kan alleen tijdens het maken/bewerken van een route.';return;}
+ const index=setupLocations.findIndex(x=>!x);
+ if(index<0){$('setupStatus').className='status warn';$('setupStatus').textContent='Er kunnen maximaal 10 locaties worden toegevoegd.';return;}
+ stopMapAddMode();
+ mapAddMode=true;
+ const btn=$('mapAddPin');
+ if(btn){btn.classList.add('active');btn.textContent='Tik op de kaart…';}
+ $('setupStatus').className='status';
+ $('setupStatus').textContent='Tik op de kaart op de plek van de nieuwe pin.';
+ mapAddHandler=e=>{
+  if(!mapAddMode)return;
+  const lat=e.latlng.lat,lon=e.latlng.lng;
+  mapAddMarker=L.marker([lat,lon],{draggable:false,zIndexOffset:5000}).addTo(map);
+  const popup='<div class="mapAddPopup"><strong>Nieuwe locatie '+(index+1)+'</strong>'+
+   '<div class="coord">'+lat.toFixed(6)+', '+lon.toFixed(6)+'</div>'+
+   '<label for="mapNewQuestion">Vraag</label><textarea id="mapNewQuestion" placeholder="Omschrijf hier de vraag of opdracht"></textarea>'+
+   '<label for="mapNewAnswer">Antwoord</label><input id="mapNewAnswer" placeholder="Voer het juiste antwoord in" autocomplete="off">'+
+   '<label for="mapNewRadius">Aankomstradius: <strong id="mapNewRadiusValue">15</strong> m</label>'+
+   '<input id="mapNewRadius" type="range" min="5" max="50" value="15" step="5">'+
+   '<button type="button" class="mapSave mapAddSave">Opslaan</button>'+
+   '<button type="button" class="secondary mapAddCancel">Annuleren</button></div>';
+  mapAddMarker.bindPopup(popup,{closeOnClick:false,autoClose:false}).openPopup();
+  const el=mapAddMarker.getPopup().getElement();
+  const radiusInput=el?.querySelector('#mapNewRadius');
+  const radiusValue=el?.querySelector('#mapNewRadiusValue');
+  if(radiusInput&&radiusValue)radiusInput.oninput=()=>radiusValue.textContent=radiusInput.value;
+  const saveBtn=el?.querySelector('.mapAddSave');
+  const cancelBtn=el?.querySelector('.mapAddCancel');
+  if(saveBtn)saveBtn.onclick=async()=>{
+   const q=el.querySelector('#mapNewQuestion')?.value.trim()||'';
+   const a=el.querySelector('#mapNewAnswer')?.value.trim()||'';
+   const r=Number(el.querySelector('#mapNewRadius')?.value)||15;
+   stopMapAddMode();
+   await saveNewMapPin(lat,lon,q,a,r,index);
+  };
+  if(cancelBtn)cancelBtn.onclick=()=>stopMapAddMode();
+  map.off('click',mapAddHandler);
+  mapAddHandler=null;
+  mapAddMode=false;
+  if(btn){btn.classList.remove('active');btn.textContent='＋ Nieuwe pin';}
+ };
+ map.on('click',mapAddHandler);
+}
+function updateMapLocation(){
+ if(!map||!current)return;
+ const p=[current.lat,current.lon];
+ if(!mapMarker)mapMarker=L.circleMarker(p,{radius:8,weight:3,fillOpacity:.85}).addTo(map);else mapMarker.setLatLng(p);
+}
+function escapeHtml(value){return String(value??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m]))}
+function renderMapRouteSelect(){
+ const sel=$('mapRouteSelect');if(!sel)return;
+ const currentName=$('routeName')?.value.trim()||'';
+ sel.innerHTML='';
+ const own=document.createElement('option');
+ own.value='';
+ own.textContent=currentName?'Huidige route: '+currentName:'Huidige route';
+ sel.appendChild(own);
+ routes.forEach((r,i)=>{
+  const o=document.createElement('option');
+  o.value=String(i);
+  o.textContent=r.name+' ('+(r.stages?.length||0)+')';
+  sel.appendChild(o);
+ });
+ sel.value='';
+}
+function selectMapRoute(value){
+ const sel=$('mapRouteSelect');
+ if(value===''){
+  testRoute=null;
+  renderMapRouteSelect();
+  updateMapRoute();
+  return;
+ }
+ const r=routes[Number(value)];
+ if(!r)return;
+ testRoute=null;
+ setupLocations=Array.from({length:10},(_,i)=>r.stages[i]?{...r.stages[i].target,radius:r.stages[i].radius||15}:null);
+ setupQuestions=Array.from({length:10},(_,i)=>r.stages[i]?.question||'');
+ setupAnswers=Array.from({length:10},(_,i)=>r.stages[i]?.answer||'');
+ saveSetup();
+ $('routeName').value=r.name;
+ selectLocation(0);
+ updateMapRoute();
+ const markers=mapRouteMarkers;
+ if(markers.length===1)map.setView(markers[0].getLatLng(),18);
+ else if(markers.length>1)map.fitBounds(L.latLngBounds(markers.map(m=>m.getLatLng())),{padding:[55,55],maxZoom:19,animate:false});
+}
+function getMapRoute(){
+ if(testRoute)return testRoute;
+ const stages=setupLocations.filter(Boolean).map((x,i)=>({target:{lat:x.lat,lon:x.lon},question:setupQuestions[i]||'',answer:setupAnswers[i]||''}));
+ return stages.length?{name:$('routeName').value.trim()||'Huidige route',stages}:null;
+}
+function mapStageData(i){
+ const r=getMapRoute();
+ return r?.stages?.[i]||null;
+}
+async function saveMapStage(i,lat,lon,question,answer){
+ const s=mapStageData(i);if(!s)return;
+ const newTarget={lat:Number(lat),lon:Number(lon)};
+ s.target=newTarget;s.question=question;s.answer=answer;
+ if(testRoute){
+  testRoute.stages[i].target={...newTarget};
+  testRoute.stages[i].question=question;
+  testRoute.stages[i].answer=answer;
+ }
+ if(setupLocations.length){
+  setupLocations[i]={lat:newTarget.lat,lon:newTarget.lon,radius:setupLocations[i]?.radius||s.radius||15};
+  setupQuestions[i]=question;
+  setupAnswers[i]=answer;
+  saveSetup();
+  selectLocation(i);
+ }
+ // Ook de opgeslagen route zelf bijwerken. Alleen de tijdelijke kaartdata
+ // aanpassen was onvoldoende: daardoor kwam na opnieuw openen de oude pin terug.
+ const routeName=$('routeName').value.trim();
+ const routeIndex=routes.findIndex(r=>r&&r.name===routeName);
+ if(routeIndex>=0){
+  const saved=routes[routeIndex];
+  if(saved.stages?.[i]){
+   saved.stages[i]={...saved.stages[i],target:{...newTarget},question,answer};
+  }
+  routes[routeIndex]=saved;
+  localStorage.setItem('gpsPuzzleRoutes',JSON.stringify(routes));
+  renderRoutes();renderRoutesPage();
+  try{
+   const api=await authRequest('/routes',{method:'POST',body:JSON.stringify(saved)});
+   if(api.ok&&Array.isArray(api.data.routes)){
+    routes=api.data.routes;
+    localStorage.setItem('gpsPuzzleRoutes',JSON.stringify(routes));
+    renderRoutes();renderRoutesPage();
+   }
+  }catch{}
+ }
+ $('setupStatus').className='status ok';
+ $('setupStatus').textContent='✓ Locatie '+(i+1)+' bijgewerkt en opgeslagen op de kaart.';
+ const marker=mapRouteMarkers[i];
+ if(marker?.getPopup()){
+  const popup='<div class="mapEditPopup"><strong>Locatie '+(i+1)+'</strong>'+
+   '<div class="mapDragHint">Tik op de pin en sleep daarna aan het ronde handvat onderaan het stokje om nauwkeurig te plaatsen.</div>'+
+   '<label for="mapQuestion'+i+'">Vraag</label><textarea id="mapQuestion'+i+'">'+escapeHtml(question||'')+'</textarea>'+
+   '<label for="mapAnswer'+i+'">Antwoord</label><input id="mapAnswer'+i+'" value="'+escapeHtml(answer||'')+'">'+
+   '<button type="button" class="secondary mapMove" data-map-move="'+i+'">📍 Pin verplaatsen</button>'+
+   '<button type="button" class="mapSave" data-map-save="'+i+'">Opslaan</button></div>';
+  marker.getPopup().setContent(popup);
+ }
+ // Na opslaan terug naar de normale pin: het verlengstokje hoort alleen
+ // zichtbaar te zijn tijdens het nauwkeurig verplaatsen.
+ if(marker){
+  marker.setIcon(L.divIcon({className:'',html:'<div class="routePin"><span>'+(i+1)+'</span></div>',iconSize:[30,38],iconAnchor:[15,38]}));
+  marker.setZIndexOffset(100+i);
+  marker.closePopup();
+ }
+}
+function updateMapRoute(){
+ if(!map)return;
+ mapRouteMarkers.forEach(m=>map.removeLayer(m));mapRouteMarkers=[];
+ const r=getMapRoute();
+ renderMapRouteSelect();
+ const sel=$('mapRouteSelect');
+ if(sel){
+  const idx=r&&!testRoute?routes.findIndex(x=>x&&x.name===r.name):-1;
+  sel.value=idx>=0?String(idx):'';
+ }
+ if(!r||!r.stages.length)return;
+ r.stages.forEach((s,i)=>{
+  const normalIcon=L.divIcon({className:'',html:'<div class="routePin"><span>'+(i+1)+'</span></div>',iconSize:[30,38],iconAnchor:[15,38]});
+  const precisionIcon=L.divIcon({className:'',html:'<div class="routePinPrecision"><div class="pinHandle">'+(i+1)+'</div><div class="pinStem"></div><div class="pinBase"><span>'+(i+1)+'</span></div></div>',iconSize:[34,82],iconAnchor:[17,38]});
+  const marker=L.marker([s.target.lat,s.target.lon],{icon:normalIcon,zIndexOffset:100+i,draggable:false}).addTo(map);
+  let moveActive=false,moveSaved=null,moveCommitted=false;
+  const stopPinDrag=()=>{
+   if(!moveActive)return;
+   moveActive=false;
+   if(marker.dragging)marker.dragging.disable();
+   map.dragging.enable();
+  };
+  marker.on('click',()=>{
+   if(!moveActive){
+    marker.setIcon(normalIcon);
+    marker.setZIndexOffset(100+i);
+   }
+  });
+  const popup='<div class="mapEditPopup"><strong>Locatie '+(i+1)+'</strong>'+
+   '<label for="mapQuestion'+i+'">Vraag</label><textarea id="mapQuestion'+i+'">'+escapeHtml(s.question||'')+'</textarea>'+
+   '<label for="mapAnswer'+i+'">Antwoord</label><input id="mapAnswer'+i+'" value="'+escapeHtml(s.answer||'')+'">'+
+   '<button type="button" class="secondary mapMove" data-map-move="'+i+'">📍 Pin verplaatsen</button>'+
+   '<button type="button" class="mapSave" data-map-save="'+i+'">Opslaan</button></div>';
+  marker.bindPopup(popup);
+  marker.on('popupopen',e=>{
+   const el=e.popup.getElement();
+   const moveBtn=el?.querySelector('[data-map-move="'+i+'"]');
+   const btn=el?.querySelector('[data-map-save="'+i+'"]');
+   if(moveBtn)moveBtn.onclick=()=>{
+    moveSaved=marker.getLatLng();
+    moveCommitted=false;
+    moveActive=true;
+    map.dragging.disable();
+    marker.setIcon(precisionIcon);
+    marker.setZIndexOffset(200+i);
+    marker.options.draggable=true;
+    marker.dragging.enable();
+    moveBtn.disabled=true;
+    moveBtn.style.display='none';
+    const q=el.querySelector('#mapQuestion'+i)?.value.trim()||'';
+    const a=el.querySelector('#mapAnswer'+i)?.value.trim()||'';
+    marker.closePopup();
+    const mapEl=map.getContainer();
+    const saveBar=document.createElement('div');
+    saveBar.className='mapSaveBar';
+    saveBar.innerHTML='<button type="button" class="mapSave" data-map-save="'+i+'">Opslaan</button>';
+    mapEl.appendChild(saveBar);
+    const saveButton=saveBar.querySelector('[data-map-save="'+i+'"]');
+    if(saveButton)saveButton.onclick=async()=>{
+      const p=marker.getLatLng();
+      moveCommitted=true;
+      saveBar.remove();
+      marker._moveSaveBar=null;
+      stopPinDrag();
+      await saveMapStage(i,p.lat,p.lng,q,a);
+    };
+    marker._moveSaveBar=saveBar;
+   };
+   if(btn)btn.onclick=async()=>{
+    const box=e.popup.getElement();
+    const q=box.querySelector('#mapQuestion'+i)?.value.trim()||'';
+    const a=box.querySelector('#mapAnswer'+i)?.value.trim()||'';
+    const p=marker.getLatLng();
+    moveCommitted=true;
+    stopPinDrag();
+    await saveMapStage(i,p.lat,p.lng,q,a);
+   };
+  });
+  mapRouteMarkers.push(marker);
+ });
+}
+function positionMapView(){
+ const v=$('mapView'),a=document.querySelector('.app'),h=document.querySelector('.header');
+ if(!v||!a||!h||v.classList.contains('hidden'))return;
+ const ar=a.getBoundingClientRect(),hr=h.getBoundingClientRect();
+ const left=hr.left,top=hr.bottom+7,width=hr.width,height=Math.max(0,ar.bottom-10-top);
+ v.style.left=left+'px';v.style.top=top+'px';v.style.width=width+'px';v.style.height=height+'px';
+}
+function showMap(){
+ showView('map');
+ positionMapView();
+ requestAnimationFrame(()=>{
+  if(!initMap()){
+   $('mapRouteName').textContent='Kaart wordt geladen…';
+   setTimeout(()=>showMap(),300);
+   return;
+  }
+  updateMapRoute();
+  positionMapView();
+  setTimeout(()=>{
+   positionMapView();
+   map.invalidateSize(true);
+
+   // Toon bij het openen van een route alle pinnen tegelijk.
+   // De kaart wordt gecentreerd op de route en krijgt rondom een kleine marge.
+   if(mapRouteMarkers.length===1){
+    map.setView(mapRouteMarkers[0].getLatLng(),18);
+   }else if(mapRouteMarkers.length>1){
+    const bounds=L.latLngBounds(mapRouteMarkers.map(m=>m.getLatLng()));
+    map.fitBounds(bounds,{padding:[55,55],maxZoom:19,animate:false});
+   }else if(current){
+    map.setView([current.lat,current.lon],Math.max(map.getZoom(),15));
+   }
+   updateMapLocation();
+  },80);
+ });
+}
+function hideMap(){
+ showView(testRoute?'test':'setup');
+}
+$('mapButton').onclick=()=>{if(!makerAuthorized)return;if($('mapView').classList.contains('hidden'))showMap();else hideMap()};
+$('mapRouteSelect').onchange=()=>selectMapRoute($('mapRouteSelect').value);
+$('mapAddPin').onclick=startMapAddMode;
+window.addEventListener('resize',()=>{if(!$('mapView').classList.contains('hidden')){positionMapView();if(map)map.invalidateSize(true)}});
+if('geolocation'in navigator)navigator.geolocation.watchPosition(onPos,onErr,{enableHighAccuracy:true,maximumAge:2000,timeout:15000});
+startOrientation();
+$('checkAnswer').onclick=()=>{
+ if(!testRoute||!reached)return;
+ const s=testRoute.stages[testIndex],given=$('answer').value.trim().toUpperCase(),expected=s.answer.toUpperCase(),box=$('answerStatus');
+ if(given!==expected){box.className='status warn';box.textContent='Nog niet goed. Probeer opnieuw.';return}
+ box.className='status ok';
+ if(testIndex<testRoute.stages.length-1){
+  box.textContent='✓ Goed antwoord! Ga verder naar locatie '+(testIndex+2)+'.';
+  $('testStatus').className='status ok';
+  $('testStatus').textContent='✓ Goed antwoord! Locatie '+(testIndex+1)+' is opgelost.';
+  testIndex++;
+  if(playerMode)savePlayerProgress();
+  setStage();update();updatePlayerView();
+  if(playerMode){
+   $('answerStatus').className='status ok';
+   $('answerStatus').textContent='✓ Goed antwoord! Ga verder naar locatie '+(testIndex+1)+'.';
+  }
+ }else{
+  if(playerMode){recordCompletedRoute(testRoute);clearPlayerProgress();}
+  $('testStatus').className='status ok';
+  $('testStatus').textContent='🎉 Gefeliciteerd! Je hebt de hele puzzelroute succesvol doorlopen!';
+  $('clueTitle').textContent='🏁 Puzzelroute voltooid!';
+  $('clue').textContent='Alle '+testRoute.stages.length+' locaties zijn opgelost. Gefeliciteerd!';
+  $('playerHero').classList.remove('locationFound');$('playerHero').classList.add('routeComplete');$('playerTitle').textContent='🎉🎉 GEFELICITEERD! 🎉🎉';
+  $('playerInstruction').textContent='Je hebt de hele puzzelroute succesvol doorlopen!';
+  $('playerFound').textContent='🏆 ALLE '+testRoute.stages.length+' LOCATIES VOLTOOID! 🏆';
+  $('puzzle').classList.add('hidden');
+ }
+};
+
+async function authRequest(path,options={}){
+ const r=await fetch(AUTH_API+path,{...options,credentials:'include',headers:{'Content-Type':'application/json',...(options.headers||{})}});
+ let data={};try{data=await r.json()}catch{}
+ return {ok:r.ok,data};
+}
+async function checkAuth(){
+ if(!AUTH_API){makerAuthorized=false;applyAuthUI();await fetchServerRoutes();openPlayer();return}
+ try{
+  const r=await authRequest('/auth/status');
+  makerAuthorized=!!r.data.authenticated;
+ }catch{makerAuthorized=false}
+ applyAuthUI();
+ if(makerAuthorized){
+  const localRoutes=routes.slice();
+  const loaded=await fetchServerRoutes();
+  if(loaded&&routes.length===0&&localRoutes.length)await syncLocalRoutesToServer(localRoutes);
+  else if(!loaded)await syncLocalRoutesToServer(localRoutes);
+  showView('setup');
+ }else{
+  await fetchServerRoutes();
+  openPlayer();
+ }
+}
+function applyAuthUI(){
+ $('makerMenu').classList.toggle('authOnly',!makerAuthorized);
+ $('loginMenu').classList.toggle('authOnly',makerAuthorized);
+ document.querySelector('.header').classList.toggle('loggedOut',!makerAuthorized);
+}
+$('homeUserMenu').onclick=()=>openPlayer();
+$('historyMenu').onclick=()=>{renderPlayerHistory();showView('history')};
+$('exportHistory').onclick=exportPlayerHistory;
+$('importHistoryButton').onclick=()=>$('importHistoryFile').click();
+$('importHistoryFile').onchange=e=>{const f=e.target.files?.[0];if(f)importPlayerHistory(f)};
+$('loginMenuButton').onclick=()=>{$('loginPassword').value='';$('loginStatus').className='status hidden';showView('login');setTimeout(()=>$('loginPassword').focus(),50)};
+$('loginCancel').onclick=()=>openPlayer();
+async function doLogin(){
+ const password=$('loginPassword').value;
+ if(!password){$('loginStatus').className='status warn';$('loginStatus').textContent='Vul het wachtwoord in.';return}
+ $('loginButton').disabled=true;
+ const r=await authRequest('/auth/login',{method:'POST',body:JSON.stringify({password})});
+ $('loginButton').disabled=false;
+ if(r.ok&&r.data.authenticated){
+  makerAuthorized=true;applyAuthUI();$('loginPassword').value='';
+  const localRoutes=routes.slice();
+  const loaded=await fetchServerRoutes();
+  if(loaded&&routes.length===0&&localRoutes.length)await syncLocalRoutesToServer(localRoutes);
+  else if(!loaded)await syncLocalRoutesToServer(localRoutes);
+  showView('setup');
+ }else{$('loginStatus').className='status warn';$('loginStatus').textContent='Inloggen mislukt. Controleer het wachtwoord.'}
+}
+$('loginButton').onclick=doLogin;
+$('loginPassword').onkeydown=e=>{if(e.key==='Enter')doLogin()};
+$('logoutButton').onclick=async()=>{
+ try{await authRequest('/auth/logout',{method:'POST'})}catch{}
+ makerAuthorized=false;playerMode=false;testRoute=null;applyAuthUI();openPlayer();
+};
+
+if(typeof L==='undefined'){console.warn('Leaflet kon niet worden geladen.')}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('service-worker.js').catch(()=>{}))}
+load();
+requestOldStorage();
+checkAuth().finally(()=>document.documentElement.classList.remove('auth-pending'));
+</script>
+</body>
+</html>
