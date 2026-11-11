@@ -597,15 +597,21 @@ function rad(x){return x*Math.PI/180}function deg(x){return x*180/Math.PI}functi
 function distance(a,b){const R=6371000,p1=rad(a.lat),p2=rad(b.lat),dp=rad(b.lat-a.lat),dl=rad(b.lon-a.lon),h=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
 function bearing(a,b){const p1=rad(a.lat),p2=rad(b.lat),dl=rad(b.lon-a.lon),y=Math.sin(dl)*Math.cos(p2),x=Math.cos(p1)*Math.sin(p2)-Math.sin(p1)*Math.cos(p2)*Math.cos(dl);return norm(deg(Math.atan2(y,x)))}
 function fmtCoord(p){return p?p.lat.toFixed(5)+', '+p.lon.toFixed(5):'—'}
-function smoothHeading(next){const now=performance.now();if(deviceHeading===null){deviceHeading=next;lastHeadingAt=now;return}const d=(next-deviceHeading+540)%360-180;const dt=Math.min(250,Math.max(16,now-lastHeadingAt));lastHeadingAt=now;if(Math.abs(d)<1.2)return;const alpha=1-Math.exp(-dt/450);deviceHeading=norm(deviceHeading+d*alpha)}
+function smoothHeading(next){
+ const now=performance.now();
+ if(deviceHeading===null){deviceHeading=next;lastHeadingAt=now;return}
+ const d=(next-deviceHeading+540)%360-180;
+ const dt=Math.min(250,Math.max(16,now-lastHeadingAt));lastHeadingAt=now;
+ if(Math.abs(d)<1.2)return;
+ if(Math.abs(d)>120){deviceHeading=norm(next);return}
+ const alpha=1-Math.exp(-dt/180);
+ deviceHeading=norm(deviceHeading+d*alpha);
+}
 function orientationHeading(e){
-  const a=rad(e.alpha||0),b=rad(e.beta||0),g=rad(e.gamma||0);
-  const vx=-Math.cos(a)*Math.sin(g)-Math.sin(a)*Math.sin(b)*Math.cos(g);
-  const vy=-Math.sin(a)*Math.sin(g)+Math.cos(a)*Math.sin(b)*Math.cos(g);
-  if(Math.abs(vx)+Math.abs(vy)<1e-7)return null;
-  const screenAngle=screen.orientation?.angle??window.orientation??0;
-  return norm(deg(Math.atan2(vx,vy))+screenAngle);
- }
+ if(typeof e.alpha!=='number'||!isFinite(e.alpha))return null;
+ const screenAngle=screen.orientation?.angle??window.orientation??0;
+ return norm(360-e.alpha+screenAngle);
+}
  function handleAbsolute(e){if(e.absolute!==true||typeof e.alpha!=='number'||!isFinite(e.alpha))return;const h=orientationHeading(e);if(h===null||!isFinite(h))return;smoothHeading(h);usingAbsolute=true;orientationStarted=true;update()}
  function handleFallback(e){if(usingAbsolute)return;if(typeof e.webkitCompassHeading==='number'&&isFinite(e.webkitCompassHeading)){smoothHeading(e.webkitCompassHeading);orientationStarted=true;update();return}if(e.absolute===true&&typeof e.alpha==='number'&&isFinite(e.alpha)){const h=orientationHeading(e);if(h===null)return;smoothHeading(h);orientationStarted=true;update()}}
  function startOrientation(fromGesture=false){if(!orientationListening){window.addEventListener('deviceorientationabsolute',handleAbsolute,true);window.addEventListener('deviceorientation',handleFallback,true);orientationListening=true}if(fromGesture&&typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function')DeviceOrientationEvent.requestPermission(true).then(result=>{if(result!=='granted')$('direction').textContent='Kompas-toestemming niet verleend'}).catch(()=>{$('direction').textContent='Kompas niet beschikbaar in deze browser'})}
