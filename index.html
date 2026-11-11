@@ -331,6 +331,7 @@ function showView(view){
  $('menu').classList.toggle('hidden',view!=='menu');
  $('historyView').classList.toggle('hidden',view!=='history');
  $('loginView').classList.toggle('hidden',view!=='login');
+ if(view==='test'&&compassMap)requestAnimationFrame(()=>{if(compassMap){compassMap.invalidateSize(true);if(current)updateCompassMap()}});
 }
 $('menuButton').onclick=()=>{
  const open=$('menu').classList.contains('hidden');
