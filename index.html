@@ -165,7 +165,7 @@ input,select,textarea{font:inherit;border:1px solid #ccd7dd;border-radius:8px;pa
 </div>
 <script>
 const $=id=>document.getElementById(id);
-let current=null,deviceHeading=null,orientationStarted=false,orientationListening=false,usingAbsolute=false,compassMap=null,compassMapMarker=null;
+let current=null,deviceHeading=null,lastHeadingAt=0,orientationStarted=false,orientationListening=false,usingAbsolute=false,compassMap=null,compassMapMarker=null;
 let playerMode=false,selected=0,setupLocations=[],setupQuestions=[],setupAnswers=[],setupSpokenDirections=[],setupSpokenInfo=[],routes=[],testRoute=null,testIndex=0,target=null,reached=false,map=null,mapMarker=null,mapRouteMarkers=[],infoReturn='setup';
 let playerProgress=null;
 let mapAddMode=false,mapAddHandler=null,mapAddMarker=null;
@@ -597,7 +597,7 @@ function rad(x){return x*Math.PI/180}function deg(x){return x*180/Math.PI}functi
 function distance(a,b){const R=6371000,p1=rad(a.lat),p2=rad(b.lat),dp=rad(b.lat-a.lat),dl=rad(b.lon-a.lon),h=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
 function bearing(a,b){const p1=rad(a.lat),p2=rad(b.lat),dl=rad(b.lon-a.lon),y=Math.sin(dl)*Math.cos(p2),x=Math.cos(p1)*Math.sin(p2)-Math.sin(p1)*Math.cos(p2)*Math.cos(dl);return norm(deg(Math.atan2(y,x)))}
 function fmtCoord(p){return p?p.lat.toFixed(5)+', '+p.lon.toFixed(5):'—'}
-function smoothHeading(next){if(deviceHeading===null){deviceHeading=next;return}const d=(next-deviceHeading+540)%360-180;deviceHeading=norm(deviceHeading+d*.25)}
+function smoothHeading(next){const now=performance.now();if(deviceHeading===null){deviceHeading=next;lastHeadingAt=now;return}const d=(next-deviceHeading+540)%360-180;lastHeadingAt=now;if(Math.abs(d)<1.2)return;const dt=Math.min(250,Math.max(16,now-(smoothHeading.lastAt||now-16)));smoothHeading.lastAt=now;const alpha=1-Math.exp(-dt/450);deviceHeading=norm(deviceHeading+d*alpha)}
 function orientationHeading(e){
   const a=rad(e.alpha||0),b=rad(e.beta||0),g=rad(e.gamma||0);
   const vx=-Math.cos(a)*Math.sin(g)-Math.sin(a)*Math.sin(b)*Math.cos(g);
