@@ -602,9 +602,11 @@ function smoothHeading(next){
  if(deviceHeading===null){deviceHeading=next;lastHeadingAt=now;return}
  const d=(next-deviceHeading+540)%360-180;
  const dt=Math.min(250,Math.max(16,now-lastHeadingAt));lastHeadingAt=now;
- if(Math.abs(d)<1.2)return;
+ // Kleine magnetometerfluctuaties negeren; normale koerswijzigingen rustiger volgen.
+ if(Math.abs(d)<1.8)return;
+ // Een grote draai (zoals de telefoon 180 graden omkeren) direct verwerken.
  if(Math.abs(d)>120){deviceHeading=norm(next);return}
- const alpha=1-Math.exp(-dt/180);
+ const alpha=1-Math.exp(-dt/420);
  deviceHeading=norm(deviceHeading+d*alpha);
 }
 function orientationHeading(e){
