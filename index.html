@@ -31,6 +31,14 @@ input,select,textarea{font:inherit;border:1px solid #ccd7dd;border-radius:8px;pa
 @media(max-height:700px){.app{padding-top:6px;gap:5px}.card{padding:8px}.slots{margin:4px 0}.slot{padding:5px 1px}.editor{gap:5px}.big{font-size:1.7rem}.arrow{font-size:3.2rem}}
 
 .authOnly{display:none!important}.loginView{flex:1;min-height:0;background:#fff;border-radius:14px;box-shadow:0 2px 10px #0001;padding:18px}.loginBox{max-width:420px;margin:25px auto}.loginBox h2{margin:0 0 6px;color:#0066cc}.loginBox p{font-size:.84rem;color:#60727e;line-height:1.4}.loginBox input{width:100%;margin:8px 0}.loginActions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}.loginStatus{margin-top:9px}.header.loggedOut .mapBtn{display:none}
+
+/* OpenStreetMap als transparante achtergrond onder het kompas. */
+.playerModeView .compass{overflow:hidden;background:rgba(255,255,255,.12)}
+.playerModeView .compassMap{position:absolute;inset:0;z-index:0;border-radius:50%;overflow:hidden;opacity:.78;pointer-events:none}
+.playerModeView .compassMap .leaflet-control-attribution{font-size:6px;line-height:1.1;background:rgba(255,255,255,.72);padding:1px 2px}
+.playerModeView .compassMap .leaflet-tile{filter:saturate(.8)}
+.playerModeView .compassTick{z-index:1;background:rgba(49,75,91,.72)}
+.playerModeView .compassLabel,.playerModeView .degree{text-shadow:0 1px 3px #fff,0 0 5px #fff}
 </style>
 </head>
 <body>
@@ -128,7 +136,7 @@ input,select,textarea{font:inherit;border:1px solid #ccd7dd;border-radius:8px;pa
  </div>
  <div class="card distance">
   <div><div class="big" id="distance">—</div><div class="muted">afstand tot doel</div></div>
-  <div><div class="compass" aria-label="Kompas"><span class="compassTick tick0"></span><span class="compassTick tick10"></span><span class="compassTick tick20"></span><span class="compassTick tick30"></span><span class="compassTick tick40"></span><span class="compassTick tick50"></span><span class="compassTick tick60"></span><span class="compassTick tick70"></span><span class="compassTick tick80"></span><span class="compassTick tick90"></span><span class="compassTick tick100"></span><span class="compassTick tick110"></span><span class="compassTick tick120"></span><span class="compassTick tick130"></span><span class="compassTick tick140"></span><span class="compassTick tick150"></span><span class="compassTick tick160"></span><span class="compassTick tick170"></span><span class="compassTick tick180"></span><span class="compassTick tick190"></span><span class="compassTick tick200"></span><span class="compassTick tick210"></span><span class="compassTick tick220"></span><span class="compassTick tick230"></span><span class="compassTick tick240"></span><span class="compassTick tick250"></span><span class="compassTick tick260"></span><span class="compassTick tick270"></span><span class="compassTick tick280"></span><span class="compassTick tick290"></span><span class="compassTick tick300"></span><span class="compassTick tick310"></span><span class="compassTick tick320"></span><span class="compassTick tick330"></span><span class="compassTick tick340"></span><span class="compassTick tick350"></span><span class="compassLabel north">N</span><span class="compassLabel east">O</span><span class="compassLabel south">Z</span><span class="compassLabel west">W</span><span class="degree deg0">0°</span><span class="degree deg90">90°</span><span class="degree deg180">180°</span><span class="degree deg270">270°</span><div class="compassCenter"></div><div class="arrow" id="arrow">↑</div></div><div class="muted" id="direction">kompas nog niet beschikbaar</div></div>
+  <div><div class="compass" aria-label="Kompas met OpenStreetMap-achtergrond"><div id="compassMap" class="compassMap" aria-hidden="true"></div><span class="compassTick tick0"></span><span class="compassTick tick10"></span><span class="compassTick tick20"></span><span class="compassTick tick30"></span><span class="compassTick tick40"></span><span class="compassTick tick50"></span><span class="compassTick tick60"></span><span class="compassTick tick70"></span><span class="compassTick tick80"></span><span class="compassTick tick90"></span><span class="compassTick tick100"></span><span class="compassTick tick110"></span><span class="compassTick tick120"></span><span class="compassTick tick130"></span><span class="compassTick tick140"></span><span class="compassTick tick150"></span><span class="compassTick tick160"></span><span class="compassTick tick170"></span><span class="compassTick tick180"></span><span class="compassTick tick190"></span><span class="compassTick tick200"></span><span class="compassTick tick210"></span><span class="compassTick tick220"></span><span class="compassTick tick230"></span><span class="compassTick tick240"></span><span class="compassTick tick250"></span><span class="compassTick tick260"></span><span class="compassTick tick270"></span><span class="compassTick tick280"></span><span class="compassTick tick290"></span><span class="compassTick tick300"></span><span class="compassTick tick310"></span><span class="compassTick tick320"></span><span class="compassTick tick330"></span><span class="compassTick tick340"></span><span class="compassTick tick350"></span><span class="compassLabel north">N</span><span class="compassLabel east">O</span><span class="compassLabel south">Z</span><span class="compassLabel west">W</span><span class="degree deg0">0°</span><span class="degree deg90">90°</span><span class="degree deg180">180°</span><span class="degree deg270">270°</span><div class="compassCenter"></div><div class="arrow" id="arrow">↑</div></div><div class="muted" id="direction">kompas nog niet beschikbaar</div></div>
  </div>
   <div class="wide">
    <h2 id="clueTitle" style="font-size:1rem;margin:4px 0">—</h2>
@@ -153,7 +161,7 @@ input,select,textarea{font:inherit;border:1px solid #ccd7dd;border-radius:8px;pa
 </div>
 <script>
 const $=id=>document.getElementById(id);
-let current=null,deviceHeading=null,orientationStarted=false,usingAbsolute=false;
+let current=null,deviceHeading=null,orientationStarted=false,usingAbsolute=false,compassMap=null,compassMapMarker=null;
 let playerMode=false,selected=0,setupLocations=[],setupQuestions=[],setupAnswers=[],setupSpokenDirections=[],setupSpokenInfo=[],routes=[],testRoute=null,testIndex=0,target=null,reached=false,map=null,mapMarker=null,mapRouteMarkers=[],infoReturn='setup';
 let playerProgress=null;
 let mapAddMode=false,mapAddHandler=null,mapAddMarker=null;
@@ -526,6 +534,7 @@ async function syncLocalRoutesToServer(localRoutes=routes){
 }
 function openPlayer(){
  playerMode=true;
+ initCompassMap();
  if(routeReady()) testRoute=makeRoute($('routeName').value);
  else if(!testRoute){
   const idx=Number($('savedRoutes').value);
@@ -558,7 +567,8 @@ $('backSetup').onclick=()=>{
 };
 
 function startTest(r,asPlayer=false){
- playerMode=!!asPlayer;voiceEnabled=false;lastSpokenTexts=[];
+ playerMode=!!asPlayer;
+ if(playerMode)initCompassMap();voiceEnabled=false;lastSpokenTexts=[];
  $('voiceStatus').textContent='Gesproken begeleiding staat uit. Druk op “Gesproken begeleiding starten”.';
  $('voiceStart').textContent='🔊 Gesproken begeleiding starten';
  playerProgress=null;
@@ -594,8 +604,7 @@ function update(){
  if(!testRoute||!target){$('distance').textContent='—';return}
  const s=testRoute.stages[testIndex],d=distance(current,target),b=bearing(current,target);
  $('distance').textContent=d<1000?Math.round(d)+' m':(d/1000).toFixed(2)+' km';
- if(deviceHeading!==null){const rel=(b-deviceHeading+540)%360-180;$('arrow').style.transform='rotate('+rel+'deg)';$('direction').textContent=Math.round(b)+'°'}
- else{$('direction').textContent='kompas —'}
+ $('arrow').style.transform='rotate('+b+'deg)';$('direction').textContent=Math.round(b)+'° vanaf noord';
  $('testStatus').textContent=current.accuracy>30?'GPS minder nauwkeurig dan 30 m; wacht even.':('Stap '+(testIndex+1)+' van '+testRoute.stages.length+' • aankomstradius '+s.radius+' m');
  if(d<=s.radius){
   if(!reached){
@@ -621,7 +630,23 @@ function update(){
   reached=false;$('testStatus').className='status';$('testStatus').textContent=playerMode?'Op weg naar de volgende locatie…':'Stap '+(testIndex+1)+' van '+testRoute.stages.length+' • '+Math.round(d)+' m naar doel • radius '+s.radius+' m';
  }
 }
-function onPos(pos){current={lat:pos.coords.latitude,lon:pos.coords.longitude,accuracy:pos.coords.accuracy};update();updateMapLocation()}
+function onPos(pos){current={lat:pos.coords.latitude,lon:pos.coords.longitude,accuracy:pos.coords.accuracy};update();updateMapLocation();updateCompassMap()}
+function initCompassMap(){
+ if(compassMap||typeof L==='undefined')return;
+ const el=$('compassMap');if(!el)return;
+ compassMap=L.map(el,{zoomControl:false,attributionControl:true,dragging:false,touchZoom:false,doubleClickZoom:false,scrollWheelZoom:false,boxZoom:false,keyboard:false,tap:false}).setView([52.5200,6.4200],18);
+ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(compassMap);
+ compassMapMarker=L.circleMarker([52.5200,6.4200],{radius:4,color:'#fff',weight:2,fillColor:'#0066cc',fillOpacity:1}).addTo(compassMap);
+ if(current)updateCompassMap();
+ requestAnimationFrame(()=>compassMap&&compassMap.invalidateSize(true));
+}
+function updateCompassMap(){
+ if(!current)return;
+ if(!compassMap){initCompassMap();return}
+ const p=[current.lat,current.lon];
+ if(compassMapMarker)compassMapMarker.setLatLng(p);
+ compassMap.setView(p,18,{animate:false});
+}
 function onErr(e){$('testStatus').textContent='GPS-fout: '+e.message;$('testStatus').className='status warn'}
 function updateMapZoomLevel(){
  if(!map)return;
